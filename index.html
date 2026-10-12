@@ -649,6 +649,9 @@
     const MIFFLIN_KEY = 'vitaltrack_mifflin_data';
     const API_KEY_STORAGE = 'vitaltrack_gemini_api_key';
 
+    const CUSTOM_FOODS_KEY = 'vitaltrack_custom_foods_catalog';
+    let userCustomFoods = [];
+
     // Base de datos nutricional de alimentos comunes (por cada 100g estándar)
     const FOOD_DATABASE = {
       'pollo': { name: 'Pechuga de pollo cocida', cal100: 165, p100: 31, c100: 0, f100: 3.6 },
@@ -760,12 +763,108 @@
     };
 
     // 1. ASISTENTE DE CÁLCULO AUTOMÁTICO DE ALIMENTOS POR GRAMOS
+    function loadCustomFoods() {
+      try {
+        const stored = localStorage.getItem(CUSTOM_FOODS_KEY);
+        if (stored) userCustomFoods = JSON.parse(stored);
+      } catch (e) {
+        userCustomFoods = [];
+      }
+      populateFoodCatalogSelect();
+    }
+
+    function saveCustomFood(name, cal, p, c, f) {
+      if (!name || cal <= 0) return;
+      const cleanName = name.trim();
+      const existing = userCustomFoods.find(item => item.name.toLowerCase() === cleanName.toLowerCase());
+      if (!existing) {
+        userCustomFoods.push({
+          id: 'custom_' + Date.now(),
+          name: cleanName,
+          cal: Math.round(cal),
+          p: p || 0,
+          c: c || 0,
+          f: f || 0
+        });
+        try {
+          localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify(userCustomFoods));
+        } catch(e) {}
+        populateFoodCatalogSelect();
+      }
+    }
+
+    function populateFoodCatalogSelect() {
+      const select = document.getElementById('foodCatalogSelect');
+      if (!select) return;
+
+      let html = '<option value="">-- Selecciona alimento --</option>';
+
+      if (userCustomFoods && userCustomFoods.length > 0) {
+        html += '<optgroup label="⭐ Mis Alimentos Guardados">';
+        userCustomFoods.forEach(cf => {
+          html += `<option value="custom_${cf.id}">${cf.name} (${cf.cal} kcal | P:${cf.p}g C:${cf.c}g G:${cf.f}g)</option>`;
+        });
+        html += '</optgroup>';
+      }
+
+      html += '<optgroup label="🥗 Alimentos Frecuentes y Platos (por 100g)">';
+      html += `
+        <option value="pollo">Pechuga de pollo cocida (165 kcal / 100g)</option>
+        <option value="res">Carne de res magra (215 kcal / 100g)</option>
+        <option value="pescado">Pescado blanco a la plancha (90 kcal / 100g)</option>
+        <option value="salmon">Salmón a la plancha (208 kcal / 100g)</option>
+        <option value="huevo">Huevo entero (74 kcal / unidad ~50g)</option>
+        <option value="arroz">Arroz blanco cocido (130 kcal / 100g)</option>
+        <option value="arroz_int">Arroz integral cocido (111 kcal / 100g)</option>
+        <option value="papa">Papa / Patata cocida (87 kcal / 100g)</option>
+        <option value="camote">Camote / Batata cocida (86 kcal / 100g)</option>
+        <option value="lentejas">Lentejas cocidas (116 kcal / 100g)</option>
+        <option value="frijoles">Frijoles / Menestras (127 kcal / 100g)</option>
+        <option value="avena">Avena en hojuelas (379 kcal / 100g)</option>
+        <option value="pan_int">Pan integral (75 kcal / rebanada ~30g)</option>
+        <option value="pan_blanco">Pan blanco (140 kcal / unidad ~50g)</option>
+        <option value="platano">Plátano / Banana (89 kcal / unidad ~100g)</option>
+        <option value="manzana">Manzana (52 kcal / 100g)</option>
+        <option value="palta">Palta / Aguacate (160 kcal / 100g)</option>
+        <option value="aceite">Aceite de oliva (119 kcal / cucharada ~13g)</option>
+        <option value="yogurt">Yogurt griego natural (97 kcal / 100g)</option>
+        <option value="ensalada">Ensalada fresca mixta (22 kcal / 100g)</option>
+        <option value="ceviche">Ceviche de pescado (260 kcal / plato estándar)</option>
+        <option value="lomo_saltado">Lomo saltado c/ arroz (520 kcal / plato)</option>
+        <option value="pollo_brasa">Pollo a la brasa 1/4 (380 kcal / pieza s/ papas)</option>
+      `;
+      html += '</optgroup>';
+      select.innerHTML = html;
+    }
+
     function setupFoodCatalog() {
+      loadCustomFoods();
       document.getElementById('calcFoodBtn').addEventListener('click', () => {
         const foodKey = document.getElementById('foodCatalogSelect').value;
         const qty = parseFloat(document.getElementById('foodCatalogQuantity').value) || 100;
-        if (!foodKey || !FOOD_DATABASE[foodKey]) {
+
+        if (!foodKey) {
           alert('Por favor selecciona un alimento de la lista.');
+          return;
+        }
+
+        // Caso alimento personalizado guardado por el usuario
+        if (foodKey.startsWith('custom_')) {
+          const cfId = foodKey.replace('custom_', '');
+          const customItem = userCustomFoods.find(item => item.id === cfId);
+          if (customItem) {
+            document.getElementById('mealName').value = customItem.name;
+            document.getElementById('mealCalories').value = customItem.cal;
+            document.getElementById('mealProtein').value = customItem.p;
+            document.getElementById('mealCarbs').value = customItem.c;
+            document.getElementById('mealFat').value = customItem.f;
+            alert(`✅ Alimento cargado: ${customItem.name} (${customItem.cal} kcal). Listo en el formulario.`);
+            return;
+          }
+        }
+
+        if (!FOOD_DATABASE[foodKey]) {
+          alert('Alimento no encontrado.');
           return;
         }
 
@@ -967,6 +1066,9 @@
         };
         appData.meals.push(meal);
         saveStorage();
+
+        // Autoguardado automático en el catálogo de alimentos frecuentes
+        saveCustomFood(meal.name, meal.calories, meal.protein, meal.carbs, meal.fat);
         e.target.reset();
         selectedImageBase64 = null;
         document.getElementById('photoPreviewBox').style.display = 'none';
