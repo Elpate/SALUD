@@ -1,0 +1,26 @@
+{
+  "name": "VitalTrack Pro: Salud, Calorías y Sueño",
+  "short_name": "VitalTrack",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e293b",
+  "description": "Registro de comidas con IA, fotos, cálculo de calorías con Mifflin-St Jeor, ejercicio y sueño.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
