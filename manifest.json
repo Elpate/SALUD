@@ -1,6 +1,6 @@
 {
-  "name": "VitalTrack Pro: Salud, Calorías y Ayuno",
-  "short_name": "VitalTrack",
+  "name": "SaludenordenPro: Salud, Calorías y Ayuno",
+  "short_name": "SaludenordenPro",
   "id": "./",
   "start_url": "./index.html",
   "scope": "./",

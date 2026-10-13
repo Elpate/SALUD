@@ -6,12 +6,12 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="VitalTrack">
+  <meta name="apple-mobile-web-app-title" content="SaludenordenPro">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VitalTrack Pro: Calorías, Ayuno y Salud</title>
+  <title>SaludenordenPro: Calorías, Ayuno y Salud</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -167,7 +167,7 @@
   <header>
     <div class="header-container">
       <div class="header-title">
-        <h1><img src="icon-192.png" alt="" style="width:30px;height:30px;border-radius:8px;"> VitalTrack Pro</h1>
+        <h1><img src="icon-192.png" alt="" style="width:30px;height:30px;border-radius:8px;"> SaludenordenPro</h1>
         <p>Nutrición, Calorías por Foto, Ejercicio, Sueño y Ayuno Intermitente</p>
       </div>
       <div class="date-navigator">
@@ -1747,7 +1747,7 @@
         const blob = new Blob([JSON.stringify(fullBackup, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.href = url;
-        a.download = `vitaltrack_respaldo_${getLocalDateString()}.json`;
+        a.download = `saludenordenpro_respaldo_${getLocalDateString()}.json`;
         a.click(); URL.revokeObjectURL(url);
       });
 
@@ -1872,7 +1872,7 @@
 
     function notifyFastGoal(fast) {
       const title = '🎉 ¡Meta de ayuno cumplida!';
-      const body = `Completaste ${fast.goal} horas de ayuno. Ya puedes terminar tu ayuno en VitalTrack.`;
+      const body = `Completaste ${fast.goal} horas de ayuno. Ya puedes terminar tu ayuno en SaludenordenPro.`;
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
       if ('Notification' in window && Notification.permission === 'granted') {
         const opts = { body, icon: 'icon-192.png', badge: 'icon-192.png', tag: 'vitaltrack-fast-goal', requireInteraction: true };
@@ -1995,7 +1995,7 @@
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js', { scope: './' })
           .then(function(reg) {
-            console.log('VitalTrack PWA: Service Worker activo');
+            console.log('SaludenordenPro PWA: Service Worker activo');
           })
           .catch(function(err) {
             console.log('Error SW:', err);
