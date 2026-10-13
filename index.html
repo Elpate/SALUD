@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VitalTrack Pro: Calorías, IA y Salud</title>
+  <title>VitalTrack Pro: Calorías, Ejercicio de Fuerza y Salud</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -115,7 +115,7 @@
     .btn-danger-outline { background: transparent; border: 1px solid #fecaca; color: var(--danger); padding: 4px 8px; font-size: 0.8rem; }
     .btn-danger-outline:hover { background: #fee2e2; }
 
-    .records-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; }
+    .records-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
     .record-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; }
     .record-item:hover { background: #f1f5f9; }
     .record-info h4 { font-size: 0.9rem; font-weight: 600; }
@@ -125,26 +125,16 @@
     .badge-lunch { background: #dbeafe; color: #1e40af; }
     .badge-dinner { background: #ede9fe; color: #6d28d9; }
     .badge-snack { background: #e0e7ff; color: #3730a3; }
-    .badge-exercise { background: #d1fae5; color: #065f46; }
     .record-value { font-weight: 700; font-size: 0.95rem; text-align: right; }
     .empty-state { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
-    /* Estilos especiales para Reconocimiento por Foto e IA */
-    .ai-box {
-      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-      border: 1px solid #86efac; border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
-    }
+    .ai-box { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
     .ai-box-title { font-weight: 700; color: #166534; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
     .photo-preview-container { margin: 12px 0; text-align: center; display: none; }
     .photo-preview-container img { max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #cbd5e1; }
     .loading-spinner { display: none; text-align: center; padding: 12px; color: #166534; font-weight: 600; font-size: 0.88rem; }
+    .food-helper-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px; }
 
-    /* Autocálculo de Alimentos Comunes */
-    .food-helper-box {
-      background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px;
-    }
-
-    .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     .period-selector { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; }
     .period-btn { border: none; background: transparent; padding: 6px 12px; font-family: inherit; font-size: 0.82rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: var(--text-muted); }
     .period-btn.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
@@ -163,7 +153,7 @@
     <div class="header-container">
       <div class="header-title">
         <h1><span>🥗</span> VitalTrack Pro (Mifflin-St Jeor & IA)</h1>
-        <p>Nutrición, Calorías por Foto, Actividad Física y Sueño</p>
+        <p>Nutrición, Calorías por Foto, Ejercicios de Fuerza y Sueño</p>
       </div>
       <div class="date-navigator">
         <button id="prevDayBtn" title="Día anterior">◀</button>
@@ -178,8 +168,8 @@
     <div class="nav-tabs">
       <button class="tab-btn active" data-tab="tab-dashboard">📊 Dashboard</button>
       <button class="tab-btn" data-tab="tab-meals">🍎 Comidas y Fotos</button>
+      <button class="tab-btn" data-tab="tab-exercise">🏋️ Ejercicios y Sesión</button>
       <button class="tab-btn" data-tab="tab-mifflin">🧮 Mifflin-St Jeor</button>
-      <button class="tab-btn" data-tab="tab-exercise">🏃 Ejercicio</button>
       <button class="tab-btn" data-tab="tab-sleep">🌙 Sueño</button>
       <button class="tab-btn" data-tab="tab-stats">📈 Estadísticas</button>
       <button class="tab-btn" data-tab="tab-settings">⚙️ Ajustes / API</button>
@@ -232,14 +222,13 @@
 
       <div class="section-grid two-cols">
         <div class="card">
-          <div class="card-title"><span>🍽️</span> Comidas de Hoy</div>
+          <div class="card-title"><span>🍽️</span> Comidas del Día Seleccionado</div>
           <div class="records-list" id="dashMealsList">
             <div class="empty-state">No hay comidas registradas hoy. Ve a "Comidas y Fotos" para añadir.</div>
           </div>
         </div>
         <div class="card">
-          <div class="card-title"><span>💪</span> Ejercicios y Descanso</div>
-          <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px;">EJERCICIOS:</div>
+          <div class="card-title"><span>💪</span> Sesión de Ejercicio de Hoy</div>
           <div class="records-list" id="dashExercisesList" style="margin-bottom:14px;">
             <div class="empty-state">Sin ejercicios hoy.</div>
           </div>
@@ -255,13 +244,13 @@
     <div id="tab-meals" class="tab-content">
       <div class="section-grid two-cols">
         <div>
-          <!-- MÓDULO 1: RECONOCIMIENTO POR FOTO CON IA -->
+          <!-- MÓDULO FOTO CON IA -->
           <div class="ai-box">
             <div class="ai-box-title">
-              <span>📷</span> Analizar Plato por Foto con Inteligencia Artificial
+              <span>📷</span> Analizar Plato o Alimento por Foto con IA
             </div>
             <p style="font-size:0.82rem; color:#14532d; margin-bottom:10px;">
-              Toma una foto de tu comida o sube una imagen desde tu galería. La IA identificará los alimentos y calculará las calorías automáticamente.
+              Toma una foto de tu comida o producto. La IA comprimirá la imagen y calculará automáticamente las calorías e ingredientes.
             </p>
 
             <input type="file" id="cameraInput" accept="image/*" style="display:none;">
@@ -281,50 +270,24 @@
             <div class="loading-spinner" id="aiLoading">
               ⏳ Analizando alimentos y calculando calorías con IA...
             </div>
-            <div id="aiResultMsg" style="font-size:0.82rem; margin-top:8px; font-weight:600; color:#166534;"></div>
+            <div id="aiResultMsg" style="font-size:0.82rem; margin-top:8px; font-weight:600;"></div>
           </div>
 
-          <!-- MÓDULO 2: ASISTENTE DE CÁLCULO POR ALIMENTO Y GRAMOS -->
+          <!-- MÓDULO CÁLCULO POR ALIMENTOS Y GRAMOS -->
           <div class="food-helper-box">
             <div style="font-size:0.9rem; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-              <span>🔍</span> Calcular Automáticamente por Alimento y Gramos
+              <span>🔍</span> Calcular por Alimento y Gramos
             </div>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
-              Elige un alimento de la lista y escribe la cantidad para calcular calorías y macros al instante:
-            </p>
             <div class="form-row">
               <div class="form-group">
-                <label for="foodCatalogSelect">Alimento Común</label>
+                <label for="foodCatalogSelect">Seleccionar Alimento</label>
                 <select id="foodCatalogSelect" class="form-control">
-                  <option value="">-- Selecciona alimento --</option>
-                  <option value="pollo">Pechuga de pollo cocida (165 kcal / 100g)</option>
-                  <option value="res">Carne de res magra (215 kcal / 100g)</option>
-                  <option value="pescado">Pescado blanco a la plancha (90 kcal / 100g)</option>
-                  <option value="salmon">Salmón a la plancha (208 kcal / 100g)</option>
-                  <option value="huevo">Huevo entero (74 kcal / unidad ~50g)</option>
-                  <option value="arroz">Arroz blanco cocido (130 kcal / 100g)</option>
-                  <option value="arroz_int">Arroz integral cocido (111 kcal / 100g)</option>
-                  <option value="papa">Papa / Patata cocida (87 kcal / 100g)</option>
-                  <option value="camote">Camote / Batata cocida (86 kcal / 100g)</option>
-                  <option value="lentejas">Lentejas cocidas (116 kcal / 100g)</option>
-                  <option value="frijoles">Frijoles / Menestras (127 kcal / 100g)</option>
-                  <option value="avena">Avena en hojuelas (379 kcal / 100g)</option>
-                  <option value="pan_int">Pan integral (75 kcal / rebanada ~30g)</option>
-                  <option value="pan_blanco">Pan blanco (140 kcal / unidad ~50g)</option>
-                  <option value="platano">Plátano / Banana (89 kcal / unidad ~100g)</option>
-                  <option value="manzana">Manzana (52 kcal / 100g)</option>
-                  <option value="palta">Palta / Aguacate (160 kcal / 100g)</option>
-                  <option value="aceite">Aceite de oliva (119 kcal / cucharada ~13g)</option>
-                  <option value="yogurt">Yogurt griego natural (97 kcal / 100g)</option>
-                  <option value="ensalada">Ensalada fresca mixta (22 kcal / 100g)</option>
-                  <option value="ceviche">Ceviche de pescado (260 kcal / plato estándar)</option>
-                  <option value="lomo_saltado">Lomo saltado c/ arroz (520 kcal / plato)</option>
-                  <option value="pollo_brasa">Pollo a la brasa 1/4 (380 kcal / pieza s/ papas)</option>
+                  <option value="">-- Cargando lista... --</option>
                 </select>
               </div>
               <div class="form-group">
-                <label for="foodCatalogQuantity">Gramos o Unidades</label>
-                <input type="number" id="foodCatalogQuantity" class="form-control" placeholder="Ej. 150" value="100">
+                <label for="foodCatalogQuantity">Gramos / Unidades</label>
+                <input type="number" id="foodCatalogQuantity" class="form-control" value="100">
               </div>
             </div>
             <button type="button" id="calcFoodBtn" class="btn btn-outline" style="width:100%; font-size:0.85rem;">
@@ -332,9 +295,9 @@
             </button>
           </div>
 
-          <!-- FORMULARIO DE REGISTRO FINAL -->
+          <!-- FORMULARIO DE REGISTRO MANUAL -->
           <div class="card">
-            <div class="card-title"><span>✍️</span> Confirmar y Guardar Registro</div>
+            <div class="card-title"><span>✍️</span> Registrar Comida</div>
             <form id="mealForm">
               <div class="form-group">
                 <label for="mealType">Momento del día</label>
@@ -347,41 +310,184 @@
               </div>
               <div class="form-group">
                 <label for="mealName">Nombre del Alimento o Plato</label>
-                <input type="text" id="mealName" class="form-control" placeholder="Ej. Pollo con arroz y ensalada" required>
+                <input type="text" id="mealName" class="form-control" placeholder="Ej. Dos scoop de proteína, Pechuga con arroz" required>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="mealCalories">Calorías Totales (kcal)</label>
-                  <input type="number" id="mealCalories" class="form-control" min="0" placeholder="Ej. 450" required>
+                  <label for="mealCalories">Calorías (kcal)</label>
+                  <input type="number" id="mealCalories" class="form-control" min="0" placeholder="Ej. 260" required>
                 </div>
                 <div class="form-group">
                   <label for="mealProtein">Proteínas (g, opcional)</label>
-                  <input type="number" id="mealProtein" class="form-control" min="0" placeholder="Ej. 30">
+                  <input type="number" id="mealProtein" class="form-control" min="0" placeholder="Ej. 50">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label for="mealCarbs">Carbohidratos (g, opcional)</label>
-                  <input type="number" id="mealCarbs" class="form-control" min="0" placeholder="Ej. 50">
+                  <input type="number" id="mealCarbs" class="form-control" min="0" placeholder="Ej. 4">
                 </div>
                 <div class="form-group">
                   <label for="mealFat">Grasas (g, opcional)</label>
-                  <input type="number" id="mealFat" class="form-control" min="0" placeholder="Ej. 12">
+                  <input type="number" id="mealFat" class="form-control" min="0" placeholder="Ej. 2">
                 </div>
               </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar Comida en la App</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar Comida</button>
             </form>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title"><span>📋</span> Comidas Registradas Hoy</div>
+          <div class="card-title"><span>📋</span> Comidas Registradas de Esta Fecha</div>
           <div class="records-list" id="mealsFullList"></div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 3: CALCULADORA MIFFLIN-ST JEOR -->
+    <!-- TAB 3: EJERCICIOS Y SESIÓN DE FUERZA -->
+    <div id="tab-exercise" class="tab-content">
+      <!-- RESUMEN DE LA SESIÓN DE HOY -->
+      <div class="metrics-grid" style="margin-bottom:16px;">
+        <div class="metric-card burned">
+          <div class="metric-label">Tiempo Total Sesión</div>
+          <div class="metric-value" id="exSessionTime">0<span style="font-size:1rem; font-weight:500;"> min</span></div>
+          <div class="metric-sub"><span id="exSessionCount">0</span> ejercicios realizados</div>
+        </div>
+        <div class="metric-card burned" style="border-left:4px solid #0284c7;">
+          <div class="metric-label">Volumen Total Levantado</div>
+          <div class="metric-value" id="exSessionVolume" style="color:#0284c7;">0<span style="font-size:1rem; font-weight:500;"> kg</span></div>
+          <div class="metric-sub">Suma de (Series × Reps × Peso)</div>
+        </div>
+        <div class="metric-card burned">
+          <div class="metric-label">Calorías Quemadas Sesión</div>
+          <div class="metric-value" id="exSessionCalories">0</div>
+          <div class="metric-sub">Gasto calórico estimado</div>
+        </div>
+      </div>
+
+      <div class="section-grid two-cols">
+        <div class="card">
+          <div class="card-title"><span>🏋️</span> Registrar Ejercicio de la Sesión</div>
+
+          <div style="display:flex; background:#e2e8f0; border-radius:8px; padding:3px; margin-bottom:14px;">
+            <button type="button" id="modeStrengthBtn" class="period-btn active" style="flex:1;">🏋️ Pesas / Fuerza</button>
+            <button type="button" id="modeCardioBtn" class="period-btn" style="flex:1;">🏃 Cardio / Aeróbico</button>
+          </div>
+
+          <form id="exerciseForm">
+            <input type="hidden" id="exerciseCategory" value="strength">
+
+            <!-- BLOQUE FUERZA / GIMNASIO -->
+            <div id="strengthFields">
+              <div class="form-group">
+                <label for="strengthQuickSelect">Seleccionar Ejercicio Popular</label>
+                <select id="strengthQuickSelect" class="form-control">
+                  <option value="">-- Selecciona o escribe abajo --</option>
+                  <optgroup label="Pecho">
+                    <option value="Press de banca plano con barra">Press de banca plano con barra</option>
+                    <option value="Press de banca inclinado con mancuernas">Press inclinado con mancuernas</option>
+                    <option value="Aperturas en máquina / Peck Deck">Aperturas en máquina / Peck Deck</option>
+                    <option value="Fondos en paralelas para pecho">Fondos en paralelas</option>
+                  </optgroup>
+                  <optgroup label="Espalda">
+                    <option value="Peso muerto con barra">Peso muerto con barra</option>
+                    <option value="Jalón al pecho en polea">Jalón al pecho en polea</option>
+                    <option value="Remo con barra / mancuerna">Remo con barra / mancuerna</option>
+                    <option value="Dominadas con peso corporal">Dominadas</option>
+                  </optgroup>
+                  <optgroup label="Piernas y Glúteos">
+                    <option value="Sentadillas con barra libre">Sentadillas con barra</option>
+                    <option value="Prensa de piernas inclinada">Prensa de piernas inclinada</option>
+                    <option value="Extensión de cuádriceps">Extensión de cuádriceps</option>
+                    <option value="Curl femoral tumbado">Curl femoral tumbado</option>
+                    <option value="Hip Thrust con barra">Hip Thrust con barra</option>
+                  </optgroup>
+                  <optgroup label="Hombros">
+                    <option value="Press militar con barra / mancuernas">Press militar con barra / mancuernas</option>
+                    <option value="Elevaciones laterales con mancuernas">Elevaciones laterales</option>
+                    <option value="Pájaros / Deltoides posterior">Pájaros / Deltoides posterior</option>
+                  </optgroup>
+                  <optgroup label="Brazos">
+                    <option value="Curl de bíceps con barra">Curl de bíceps con barra</option>
+                    <option value="Extensión de tríceps en polea">Extensión de tríceps en polea</option>
+                    <option value="Press francés con barra">Press francés con barra</option>
+                  </optgroup>
+                  <optgroup label="Abdomen">
+                    <option value="Crunch abdominal en polea">Crunch abdominal en polea</option>
+                    <option value="Plancha abdominal">Plancha abdominal</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="strengthExerciseName">Nombre del Ejercicio</label>
+                <input type="text" id="strengthExerciseName" class="form-control" placeholder="Ej. Press de banca para pecho" value="Press de banca para pecho" required>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="strengthSets">Series</label>
+                  <input type="number" id="strengthSets" class="form-control" min="1" value="3" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="strengthReps">Reps / Serie</label>
+                  <input type="number" id="strengthReps" class="form-control" min="1" value="3" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="strengthWeight">Peso (kg)</label>
+                  <input type="number" step="0.5" id="strengthWeight" class="form-control" min="0" value="80" required>
+                </div>
+              </div>
+
+              <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:10px; margin-bottom:12px; font-size:0.85rem; color:#166534; display:flex; justify-content:space-between;">
+                <span>Volumen de carga levantado:</span>
+                <strong id="liveVolumeDisplay">720 kg</strong>
+              </div>
+            </div>
+
+            <!-- BLOQUE CARDIO -->
+            <div id="cardioFields" style="display:none;">
+              <div class="form-group">
+                <label for="cardioType">Tipo de Actividad</label>
+                <select id="cardioType" class="form-control">
+                  <option value="Caminata">Caminata</option>
+                  <option value="Correr / Running">Correr / Running</option>
+                  <option value="Ciclismo">Ciclismo</option>
+                  <option value="Natación">Natación</option>
+                  <option value="Fútbol / Deporte">Fútbol / Deporte</option>
+                  <option value="HIIT / Funcional">HIIT / Funcional</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cardioDesc">Descripción</label>
+                <input type="text" id="cardioDesc" class="form-control" placeholder="Ej. 5 km al aire libre">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="exerciseDuration">Duración estimada (minutos)</label>
+                <input type="number" id="exerciseDuration" class="form-control" min="1" value="15" required>
+              </div>
+              <div class="form-group">
+                <label for="exerciseCalories">Calorías Quemadas (kcal)</label>
+                <input type="number" id="exerciseCalories" class="form-control" min="0" value="95" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-secondary" style="width: 100%;">+ Añadir Ejercicio a la Sesión</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>📋</span> Ejercicios Realizados en la Sesión de Hoy</div>
+          <div class="records-list" id="exercisesFullList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CALCULADORA MIFFLIN-ST JEOR -->
     <div id="tab-mifflin" class="tab-content">
       <div class="section-grid two-cols">
         <div class="card">
@@ -397,25 +503,25 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="mifflinAge">Edad (años)</label>
-                <input type="number" id="mifflinAge" class="form-control" min="10" max="110" placeholder="Ej. 30" required>
+                <input type="number" id="mifflinAge" class="form-control" min="10" max="110" value="30" required>
               </div>
               <div class="form-group">
                 <label for="mifflinWeight">Peso (kg)</label>
-                <input type="number" step="0.1" id="mifflinWeight" class="form-control" min="30" max="300" placeholder="Ej. 75" required>
+                <input type="number" step="0.1" id="mifflinWeight" class="form-control" min="30" max="300" value="75" required>
               </div>
             </div>
             <div class="form-group">
               <label for="mifflinHeight">Altura (cm)</label>
-              <input type="number" id="mifflinHeight" class="form-control" min="100" max="250" placeholder="Ej. 175" required>
+              <input type="number" id="mifflinHeight" class="form-control" min="100" max="250" value="175" required>
             </div>
             <div class="form-group">
               <label for="mifflinActivity">Factor de Actividad Física</label>
               <select id="mifflinActivity" class="form-control" required>
-                <option value="1.2">Sedentario (Poco o ningún ejercicio) [x1.2]</option>
-                <option value="1.375">Ligero (Ejercicio 1-3 días/semana) [x1.375]</option>
-                <option value="1.55" selected>Moderado (Ejercicio 3-5 días/semana) [x1.55]</option>
-                <option value="1.725">Intenso (Ejercicio 6-7 días/semana) [x1.725]</option>
-                <option value="1.9">Muy Intenso (Atletas / Doble sesión) [x1.9]</option>
+                <option value="1.2">Sedentario [x1.2]</option>
+                <option value="1.375">Ligero [x1.375]</option>
+                <option value="1.55" selected>Moderado (3-5 días/semana) [x1.55]</option>
+                <option value="1.725">Intenso (6-7 días/semana) [x1.725]</option>
+                <option value="1.9">Muy Intenso [x1.9]</option>
               </select>
             </div>
             <div class="form-group">
@@ -450,54 +556,6 @@
               ✅ Aplicar como mi Meta Diaria en la App
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 4: EJERCICIO -->
-    <div id="tab-exercise" class="tab-content">
-      <div class="section-grid two-cols">
-        <div class="card">
-          <div class="card-title"><span>🏋️</span> Registrar Ejercicio</div>
-          <form id="exerciseForm">
-            <div class="form-group">
-              <label for="exerciseType">Tipo de Actividad</label>
-              <select id="exerciseType" class="form-control" required>
-                <option value="Caminata">Caminata</option>
-                <option value="Correr / Running">Correr / Running</option>
-                <option value="Gimnasio / Pesas">Gimnasio / Pesas</option>
-                <option value="Ciclismo">Ciclismo</option>
-                <option value="Natación">Natación</option>
-                <option value="Fútbol / Deporte">Fútbol / Deporte</option>
-                <option value="Yoga / Pilates">Yoga / Pilates</option>
-                <option value="HIIT / Funcional">HIIT / Funcional</option>
-                <option value="Otro">Otro</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="exerciseDesc">Descripción / Rutina</label>
-              <input type="text" id="exerciseDesc" class="form-control" placeholder="Ej. 5 km al aire libre, Rutina pecho">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="exerciseDuration">Duración (minutos)</label>
-                <input type="number" id="exerciseDuration" class="form-control" min="1" placeholder="Ej. 45" required>
-              </div>
-              <div class="form-group">
-                <label for="exerciseCalories">Calorías Quemadas (kcal)</label>
-                <input type="number" id="exerciseCalories" class="form-control" min="0" placeholder="Ej. 300" required>
-              </div>
-            </div>
-            <button type="button" id="estimateCalBtn" class="btn btn-outline" style="width: 100%; margin-bottom: 12px; font-size: 0.85rem;">
-              ⚡ Sugerir calorías estimadas según duración
-            </button>
-            <button type="submit" class="btn btn-secondary" style="width: 100%;">Agregar Ejercicio</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <div class="card-title"><span>🏃‍♂️</span> Ejercicios Registrados</div>
-          <div class="records-list" id="exercisesFullList"></div>
         </div>
       </div>
     </div>
@@ -611,10 +669,10 @@
       <div class="card" style="max-width: 650px; margin: 0 auto;">
         <div class="card-title"><span>🤖</span> Configuración de Inteligencia Artificial (Gemini Vision)</div>
         <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">
-          Para activar el reconocimiento automático de fotos de platos con IA, puedes ingresar una clave de API gratuita de Gemini (Google AI Studio). Se almacena exclusivamente en tu teléfono/navegador.
+          Para activar el reconocimiento por fotos con IA, ingresa tu clave gratuita de Google AI Studio (empieza por <code>AIzaSy...</code>).
         </p>
         <div class="form-group">
-          <label for="geminiApiKeyInput">Clave API de Gemini (Opcional para fotos con IA)</label>
+          <label for="geminiApiKeyInput">Clave API de Gemini</label>
           <input type="password" id="geminiApiKeyInput" class="form-control" placeholder="AIzaSy...">
         </div>
         <button id="saveApiKeyBtn" class="btn btn-secondary" style="font-size:0.85rem; margin-bottom:20px;">
@@ -631,7 +689,7 @@
         </div>
 
         <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
-          <h3 style="font-size:0.95rem; font-weight:700; margin-bottom:6px;">Copia de Seguridad</h3>
+          <h3 style="font-size:0.95rem; font-weight:700; margin-bottom:6px;">Copia de Seguridad y Limpieza</h3>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button id="exportDataBtn" class="btn btn-outline" style="font-size:0.85rem;">💾 Exportar JSON</button>
             <button id="importDataBtn" class="btn btn-outline" style="font-size:0.85rem;">📂 Importar JSON</button>
@@ -648,17 +706,26 @@
     const SETTINGS_KEY = 'vitaltrack_health_settings';
     const MIFFLIN_KEY = 'vitaltrack_mifflin_data';
     const API_KEY_STORAGE = 'vitaltrack_gemini_api_key';
-
     const CUSTOM_FOODS_KEY = 'vitaltrack_custom_foods_catalog';
+
+    // 1. OBTENER FECHA LOCAL REAL (Corrige el error de cambio de día UTC en Perú / Latinoamérica)
+    function getLocalDateString(d) {
+      const dateObj = d ? new Date(d) : new Date();
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    let selectedDate = getLocalDateString();
     let userCustomFoods = [];
 
-    // Base de datos nutricional de alimentos comunes (por cada 100g estándar)
     const FOOD_DATABASE = {
       'pollo': { name: 'Pechuga de pollo cocida', cal100: 165, p100: 31, c100: 0, f100: 3.6 },
       'res': { name: 'Carne de res magra cocida', cal100: 215, p100: 26, c100: 0, f100: 11 },
       'pescado': { name: 'Pescado blanco a la plancha', cal100: 90, p100: 18, c100: 0, f100: 1.2 },
       'salmon': { name: 'Salmón a la plancha', cal100: 208, p100: 20, c100: 0, f100: 13 },
-      'huevo': { name: 'Huevo entero cocido (unidad)', cal100: 148, p100: 12.6, c100: 0.8, f100: 10, isUnit: true, unitGrams: 50 },
+      'huevo': { name: 'Huevo entero (unidad)', cal100: 148, p100: 12.6, c100: 0.8, f100: 10, isUnit: true, unitGrams: 50 },
       'arroz': { name: 'Arroz blanco cocido', cal100: 130, p100: 2.7, c100: 28, f100: 0.3 },
       'arroz_int': { name: 'Arroz integral cocido', cal100: 111, p100: 2.6, c100: 23, f100: 0.9 },
       'papa': { name: 'Papa / Patata cocida', cal100: 87, p100: 1.9, c100: 20, f100: 0.1 },
@@ -672,7 +739,7 @@
       'manzana': { name: 'Manzana fresca', cal100: 52, p100: 0.3, c100: 14, f100: 0.2 },
       'palta': { name: 'Palta / Aguacate', cal100: 160, p100: 2, c100: 8.5, f100: 14.7 },
       'aceite': { name: 'Aceite de oliva (cda)', cal100: 884, p100: 0, c100: 0, f100: 100, isUnit: true, unitGrams: 13 },
-      'yogurt': { name: 'Yogurt griego natural', cal100: 97, p100: 10, c100: 3.6, f100: 5 },
+      'yogurt': { name: 'Yogurt griego / Kéfir', cal100: 97, p100: 10, c100: 3.6, f100: 5 },
       'ensalada': { name: 'Ensalada fresca mixta', cal100: 22, p100: 1.2, c100: 4.5, f100: 0.2 },
       'ceviche': { name: 'Ceviche de pescado', cal100: 87, p100: 12, c100: 6, f100: 1.8 },
       'lomo_saltado': { name: 'Lomo saltado c/ arroz', cal100: 148, p100: 9.1, c100: 13.7, f100: 6.3 },
@@ -682,7 +749,6 @@
     let appData = { meals: [], exercises: [], sleep: [] };
     let appSettings = { calGoal: 2000, sleepGoal: 8 };
     let mifflinData = { gender: 'male', age: 30, weight: 75, height: 175, activity: 1.55, goal: 'maintain', tmb: 1694, tdee: 2625, calculatedGoal: 2625 };
-    let selectedDate = new Date().toISOString().split('T')[0];
     let statsPeriodDays = 7;
     let selectedImageBase64 = null;
 
@@ -693,6 +759,7 @@
       setupMifflin();
       setupFoodCatalog();
       setupAIVision();
+      setupExerciseModule();
       setupForms();
       setupStatsControls();
       setupSettings();
@@ -707,6 +774,8 @@
         if (storedSettings) appSettings = JSON.parse(storedSettings);
         const storedMifflin = localStorage.getItem(MIFFLIN_KEY);
         if (storedMifflin) mifflinData = JSON.parse(storedMifflin);
+        const storedCustom = localStorage.getItem(CUSTOM_FOODS_KEY);
+        if (storedCustom) userCustomFoods = JSON.parse(storedCustom);
       } catch (e) {
         console.error('Error cargando almacenamiento:', e);
       }
@@ -717,6 +786,7 @@
         localStorage.setItem(DB_KEY, JSON.stringify(appData));
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
         localStorage.setItem(MIFFLIN_KEY, JSON.stringify(mifflinData));
+        localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify(userCustomFoods));
       } catch (e) {
         console.error('Error guardando:', e);
       }
@@ -725,20 +795,26 @@
     function setupDateControls() {
       const input = document.getElementById('currentDateInput');
       input.value = selectedDate;
-      input.addEventListener('change', (e) => { selectedDate = e.target.value; renderAll(); });
+
+      input.addEventListener('change', (e) => {
+        selectedDate = e.target.value;
+        renderAll();
+      });
+
       document.getElementById('prevDayBtn').addEventListener('click', () => shiftDate(-1));
       document.getElementById('nextDayBtn').addEventListener('click', () => shiftDate(1));
       document.getElementById('todayBtn').addEventListener('click', () => {
-        selectedDate = new Date().toISOString().split('T')[0];
+        selectedDate = getLocalDateString();
         input.value = selectedDate;
         renderAll();
       });
     }
 
     function shiftDate(offset) {
-      const d = new Date(selectedDate + 'T00:00:00');
+      const parts = selectedDate.split('-');
+      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       d.setDate(d.getDate() + offset);
-      selectedDate = d.toISOString().split('T')[0];
+      selectedDate = getLocalDateString(d);
       document.getElementById('currentDateInput').value = selectedDate;
       renderAll();
     }
@@ -762,37 +838,7 @@
       if (btn) btn.click();
     };
 
-    // 1. ASISTENTE DE CÁLCULO AUTOMÁTICO DE ALIMENTOS POR GRAMOS
-    function loadCustomFoods() {
-      try {
-        const stored = localStorage.getItem(CUSTOM_FOODS_KEY);
-        if (stored) userCustomFoods = JSON.parse(stored);
-      } catch (e) {
-        userCustomFoods = [];
-      }
-      populateFoodCatalogSelect();
-    }
-
-    function saveCustomFood(name, cal, p, c, f) {
-      if (!name || cal <= 0) return;
-      const cleanName = name.trim();
-      const existing = userCustomFoods.find(item => item.name.toLowerCase() === cleanName.toLowerCase());
-      if (!existing) {
-        userCustomFoods.push({
-          id: 'custom_' + Date.now(),
-          name: cleanName,
-          cal: Math.round(cal),
-          p: p || 0,
-          c: c || 0,
-          f: f || 0
-        });
-        try {
-          localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify(userCustomFoods));
-        } catch(e) {}
-        populateFoodCatalogSelect();
-      }
-    }
-
+    // CATÁLOGO DE COMIDAS Y AUTOGUARDADO PERSONALIZADO
     function populateFoodCatalogSelect() {
       const select = document.getElementById('foodCatalogSelect');
       if (!select) return;
@@ -808,37 +854,33 @@
       }
 
       html += '<optgroup label="🥗 Alimentos Frecuentes y Platos (por 100g)">';
-      html += `
-        <option value="pollo">Pechuga de pollo cocida (165 kcal / 100g)</option>
-        <option value="res">Carne de res magra (215 kcal / 100g)</option>
-        <option value="pescado">Pescado blanco a la plancha (90 kcal / 100g)</option>
-        <option value="salmon">Salmón a la plancha (208 kcal / 100g)</option>
-        <option value="huevo">Huevo entero (74 kcal / unidad ~50g)</option>
-        <option value="arroz">Arroz blanco cocido (130 kcal / 100g)</option>
-        <option value="arroz_int">Arroz integral cocido (111 kcal / 100g)</option>
-        <option value="papa">Papa / Patata cocida (87 kcal / 100g)</option>
-        <option value="camote">Camote / Batata cocida (86 kcal / 100g)</option>
-        <option value="lentejas">Lentejas cocidas (116 kcal / 100g)</option>
-        <option value="frijoles">Frijoles / Menestras (127 kcal / 100g)</option>
-        <option value="avena">Avena en hojuelas (379 kcal / 100g)</option>
-        <option value="pan_int">Pan integral (75 kcal / rebanada ~30g)</option>
-        <option value="pan_blanco">Pan blanco (140 kcal / unidad ~50g)</option>
-        <option value="platano">Plátano / Banana (89 kcal / unidad ~100g)</option>
-        <option value="manzana">Manzana (52 kcal / 100g)</option>
-        <option value="palta">Palta / Aguacate (160 kcal / 100g)</option>
-        <option value="aceite">Aceite de oliva (119 kcal / cucharada ~13g)</option>
-        <option value="yogurt">Yogurt griego natural (97 kcal / 100g)</option>
-        <option value="ensalada">Ensalada fresca mixta (22 kcal / 100g)</option>
-        <option value="ceviche">Ceviche de pescado (260 kcal / plato estándar)</option>
-        <option value="lomo_saltado">Lomo saltado c/ arroz (520 kcal / plato)</option>
-        <option value="pollo_brasa">Pollo a la brasa 1/4 (380 kcal / pieza s/ papas)</option>
-      `;
+      for (const [k, v] of Object.entries(FOOD_DATABASE)) {
+        html += `<option value="${k}">${v.name} (${v.cal100} kcal / 100g)</option>`;
+      }
       html += '</optgroup>';
       select.innerHTML = html;
     }
 
+    function saveCustomFood(name, cal, p, c, f) {
+      if (!name || cal <= 0) return;
+      const cleanName = name.trim();
+      const existing = userCustomFoods.find(item => item.name.toLowerCase() === cleanName.toLowerCase());
+      if (!existing) {
+        userCustomFoods.push({
+          id: 'cf_' + Date.now(),
+          name: cleanName,
+          cal: Math.round(cal),
+          p: p || 0,
+          c: c || 0,
+          f: f || 0
+        });
+        saveStorage();
+        populateFoodCatalogSelect();
+      }
+    }
+
     function setupFoodCatalog() {
-      loadCustomFoods();
+      populateFoodCatalogSelect();
       document.getElementById('calcFoodBtn').addEventListener('click', () => {
         const foodKey = document.getElementById('foodCatalogSelect').value;
         const qty = parseFloat(document.getElementById('foodCatalogQuantity').value) || 100;
@@ -848,7 +890,6 @@
           return;
         }
 
-        // Caso alimento personalizado guardado por el usuario
         if (foodKey.startsWith('custom_')) {
           const cfId = foodKey.replace('custom_', '');
           const customItem = userCustomFoods.find(item => item.id === cfId);
@@ -858,22 +899,16 @@
             document.getElementById('mealProtein').value = customItem.p;
             document.getElementById('mealCarbs').value = customItem.c;
             document.getElementById('mealFat').value = customItem.f;
-            alert(`✅ Alimento cargado: ${customItem.name} (${customItem.cal} kcal). Listo en el formulario.`);
+            alert(`✅ Alimento cargado: ${customItem.name} (${customItem.cal} kcal). Listo para guardar.`);
             return;
           }
         }
 
-        if (!FOOD_DATABASE[foodKey]) {
-          alert('Alimento no encontrado.');
-          return;
-        }
-
         const item = FOOD_DATABASE[foodKey];
-        let grams = qty;
-        if (item.isUnit && item.unitGrams) {
-          grams = qty * item.unitGrams;
-        }
+        if (!item) return;
 
+        let grams = qty;
+        if (item.isUnit && item.unitGrams) grams = qty * item.unitGrams;
         const factor = grams / 100.0;
         const totalCal = Math.round(item.cal100 * factor);
         const totalP = +(item.p100 * factor).toFixed(1);
@@ -886,11 +921,11 @@
         document.getElementById('mealCarbs').value = totalC;
         document.getElementById('mealFat').value = totalF;
 
-        alert(`✅ Calculado automáticamente: ${totalCal} kcal (P: ${totalP}g, C: ${totalC}g, G: ${totalF}g). Campos listos para guardar.`);
+        alert(`✅ Calculado automáticamente: ${totalCal} kcal. Campos colocados en el formulario.`);
       });
     }
 
-    // 2. RECONOCIMIENTO POR FOTO CON IA (GEMINI VISION API)
+    // FOTOS CON IA Y COMPRESIÓN AUTOMÁTICA
     function setupAIVision() {
       const cameraInput = document.getElementById('cameraInput');
       const takePhotoBtn = document.getElementById('takePhotoBtn');
@@ -917,60 +952,46 @@
         reader.readAsDataURL(file);
       });
 
-      // Función auxiliar para redimensionar y comprimir imágenes antes de enviarlas a la IA
-      function compressImageForAI(base64Data, callback) {
+      function compressImage(base64Str, cb) {
         const img = new Image();
-        img.onload = function() {
+        img.onload = () => {
           const maxDim = 1000;
-          let w = img.width;
-          let h = img.height;
+          let w = img.width, h = img.height;
           if (w > maxDim || h > maxDim) {
-            if (w > h) {
-              h = Math.round((h * maxDim) / w);
-              w = maxDim;
-            } else {
-              w = Math.round((w * maxDim) / h);
-              h = maxDim;
-            }
+            if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else { w = Math.round((w * maxDim) / h); h = maxDim; }
           }
           const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
+          canvas.width = w; canvas.height = h;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, w, h);
-          const compressed = canvas.toDataURL('image/jpeg', 0.82);
-          callback(compressed);
+          cb(canvas.toDataURL('image/jpeg', 0.8));
         };
-        img.onerror = function() {
-          callback(base64Data);
-        };
-        img.src = base64Data;
+        img.onerror = () => cb(base64Str);
+        img.src = base64Str;
       }
 
       analyzePhotoBtn.addEventListener('click', async () => {
         if (!selectedImageBase64) return;
-        let apiKey = (localStorage.getItem(API_KEY_STORAGE) || '').trim();
+        const apiKey = (localStorage.getItem(API_KEY_STORAGE) || '').trim();
 
         aiLoading.style.display = 'block';
         aiResultMsg.textContent = '';
         analyzePhotoBtn.disabled = true;
 
-        compressImageForAI(selectedImageBase64, async (compressedBase64) => {
-          const rawBase64 = compressedBase64.includes(',') ? compressedBase64.split(',')[1] : compressedBase64;
+        compressImage(selectedImageBase64, async (compressed) => {
+          const rawBase64 = compressed.split(',')[1];
 
           if (!apiKey) {
             aiLoading.style.display = 'none';
             analyzePhotoBtn.disabled = false;
-            // Detección inteligente por defecto cuando no se ingresa clave
-            const detectedName = 'Alimento / Bebida en foto';
-            document.getElementById('mealName').value = detectedName;
+            document.getElementById('mealName').value = 'Alimento en foto';
             document.getElementById('mealCalories').value = 250;
-            aiResultMsg.innerHTML = `⚠️ <strong>Sin clave de IA configurada:</strong> Se asignaron valores de referencia.<br>Puedes ingresar tu clave gratuita en la pestaña <em>"Ajustes / API"</em> para análisis con visión artificial completa.`;
+            aiResultMsg.innerHTML = '<span style="color:#d97706;">⚠️ Sin clave de IA configurada. Ingresa tu clave gratuita en la pestaña "Ajustes / API".</span>';
             return;
           }
 
           try {
-            // Consultamos la API de Gemini 1.5 Flash con el prompt de nutrición
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             const response = await fetch(url, {
               method: 'POST',
@@ -978,7 +999,7 @@
               body: JSON.stringify({
                 contents: [{
                   parts: [
-                    { text: 'Eres un nutricionista experto. Analiza la imagen. Si es un producto empaquetado o botella, lee la etiqueta y tamaño para calcular las calorías. Si es un plato servido, identifica los alimentos e ingredientes y estima porciones y calorías totales. Responde ÚNICAMENTE un JSON con esta estructura exacta sin explicaciones adicionales: {"nombre": "Nombre descriptivo del alimento o plato", "calorias": 450, "proteinas": 30, "carbohidratos": 40, "grasas": 12, "detalle": "Breve desglose de ingredientes o porción"}' },
+                    { text: 'Eres un nutricionista. Analiza la imagen. Si es un producto con etiqueta, lee el producto y calorías. Si es un plato, estima porciones y calorías totales. Devuelve ÚNICAMENTE un JSON con: {"nombre": "Descripción", "calorias": 450, "proteinas": 30, "carbohidratos": 40, "grasas": 12, "detalle": "Desglose"}' },
                     { inline_data: { mime_type: 'image/jpeg', data: rawBase64 } }
                   ]
                 }]
@@ -990,11 +1011,7 @@
             analyzePhotoBtn.disabled = false;
 
             if (data.error) {
-              console.error('Error de Google Gemini:', data.error);
-              let msg = data.error.message || 'Error en la clave de API';
-              if (msg.includes('API key not valid')) {
-                msg = 'La clave API ingresada no es válida. Revisa que esté bien copiada en la pestaña Ajustes.';
-              }
+              const msg = data.error.message || 'Error en la clave';
               aiResultMsg.innerHTML = `<span style="color:var(--danger);">❌ Error de Google: ${msg}</span>`;
               alert(`Error al consultar Gemini: ${msg}`);
               return;
@@ -1003,19 +1020,10 @@
             if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
               const rawText = data.candidates[0].content.parts[0].text;
               const cleanJson = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-              
               let result = {};
-              try {
-                result = JSON.parse(cleanJson);
-              } catch(e) {
-                // Si la IA no devolvió JSON puro, extraer lo más cercano
-                const calMatch = rawText.match(/\b(\d{2,4})\s*kcal/i) || rawText.match(/calorias["\s:]+(\d+)/i);
-                result = {
-                  nombre: 'Alimento analizado',
-                  calorias: calMatch ? parseInt(calMatch[1]) : 300,
-                  proteinas: 15, carbohidratos: 30, grasas: 10,
-                  detalle: rawText.substring(0, 100)
-                };
+              try { result = JSON.parse(cleanJson); }
+              catch(e) {
+                result = { nombre: 'Alimento analizado', calorias: 300, proteinas: 15, carbohidratos: 30, grasas: 10, detalle: rawText.substring(0, 100) };
               }
 
               document.getElementById('mealName').value = result.nombre || 'Alimento identificado';
@@ -1024,19 +1032,181 @@
               document.getElementById('mealCarbs').value = result.carbohidratos || 0;
               document.getElementById('mealFat').value = result.grasas || 0;
 
-              aiResultMsg.innerHTML = `✅ <strong>Detectado con IA:</strong> <em>${result.nombre}</em> (~${result.calorias} kcal).<br><small style="color:var(--text-muted);">${result.detalle || ''}</small>`;
-              alert(`✅ ¡Identificado con éxito! ${result.nombre} (~${result.calorias} kcal). Datos cargados en el formulario.`);
+              aiResultMsg.innerHTML = `✅ <strong>Detectado con IA:</strong> <em>${result.nombre}</em> (~${result.calorias} kcal).`;
+              alert(`✅ ¡Identificado con éxito! ${result.nombre} (~${result.calorias} kcal).`);
             } else {
-              throw new Error('Respuesta vacía de la IA.');
+              throw new Error('Respuesta vacía');
             }
           } catch (err) {
             aiLoading.style.display = 'none';
             analyzePhotoBtn.disabled = false;
-            console.error('Error al analizar foto:', err);
-            aiResultMsg.innerHTML = `<span style="color:var(--danger);">⚠️ Hubo un problema al conectar con Google. Revisa tu clave en Ajustes o usa el cálculo por gramos.</span>`;
-            alert('No se pudo completar el análisis. Verifica tu conexión a internet o que tu clave API de Gemini esté bien copiada en Ajustes.');
+            aiResultMsg.innerHTML = '<span style="color:var(--danger);">⚠️ Error al conectar con Google. Revisa tu clave en Ajustes.</span>';
+            alert('No se pudo completar el análisis con IA.');
           }
         });
+      });
+    }
+
+    // MÓDULO DE ENTRENAMIENTO DE FUERZA Y CARDIO
+    function setupExerciseModule() {
+      const modeStrengthBtn = document.getElementById('modeStrengthBtn');
+      const modeCardioBtn = document.getElementById('modeCardioBtn');
+      const strengthFields = document.getElementById('strengthFields');
+      const cardioFields = document.getElementById('cardioFields');
+      const exCategoryInput = document.getElementById('exerciseCategory');
+      const strengthQuickSelect = document.getElementById('strengthQuickSelect');
+      const strengthExerciseName = document.getElementById('strengthExerciseName');
+      const strengthSets = document.getElementById('strengthSets');
+      const strengthReps = document.getElementById('strengthReps');
+      const strengthWeight = document.getElementById('strengthWeight');
+      const exDuration = document.getElementById('exerciseDuration');
+      const exCalories = document.getElementById('exerciseCalories');
+      const liveVolume = document.getElementById('liveVolumeDisplay');
+
+      function updateLiveVolume() {
+        const sets = parseInt(strengthSets.value) || 0;
+        const reps = parseInt(strengthReps.value) || 0;
+        const weight = parseFloat(strengthWeight.value) || 0;
+        const vol = Math.round(sets * reps * weight);
+        if (liveVolume) liveVolume.textContent = vol.toLocaleString() + ' kg';
+
+        const mins = sets * 4;
+        if (mins > 0 && exCategoryInput.value === 'strength') {
+          exDuration.value = mins;
+          exCalories.value = Math.round(mins * 6.5);
+        }
+      }
+
+      modeStrengthBtn.addEventListener('click', () => {
+        modeStrengthBtn.classList.add('active');
+        modeCardioBtn.classList.remove('active');
+        strengthFields.style.display = 'block';
+        cardioFields.style.display = 'none';
+        exCategoryInput.value = 'strength';
+        strengthExerciseName.required = true;
+        updateLiveVolume();
+      });
+
+      modeCardioBtn.addEventListener('click', () => {
+        modeCardioBtn.classList.add('active');
+        modeStrengthBtn.classList.remove('active');
+        strengthFields.style.display = 'none';
+        cardioFields.style.display = 'block';
+        exCategoryInput.value = 'cardio';
+        strengthExerciseName.required = false;
+        exDuration.value = 30;
+        exCalories.value = 210;
+      });
+
+      strengthQuickSelect.addEventListener('change', () => {
+        if (strengthQuickSelect.value) strengthExerciseName.value = strengthQuickSelect.value;
+      });
+
+      strengthSets.addEventListener('input', updateLiveVolume);
+      strengthReps.addEventListener('input', updateLiveVolume);
+      strengthWeight.addEventListener('input', updateLiveVolume);
+
+      document.getElementById('exerciseForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const category = exCategoryInput.value || 'strength';
+        let name = '';
+        let sets = 0, reps = 0, weight = 0, volume = 0;
+
+        if (category === 'strength') {
+          name = strengthExerciseName.value.trim() || 'Ejercicio de pesas';
+          sets = parseInt(strengthSets.value) || 1;
+          reps = parseInt(strengthReps.value) || 1;
+          weight = parseFloat(strengthWeight.value) || 0;
+          volume = Math.round(sets * reps * weight);
+        } else {
+          name = document.getElementById('cardioType').value;
+          const desc = document.getElementById('cardioDesc').value.trim();
+          if (desc) name += ` (${desc})`;
+        }
+
+        const duration = parseInt(exDuration.value) || 15;
+        const calories = parseInt(exCalories.value) || 80;
+
+        const exerciseItem = {
+          id: 'ex_' + Date.now(),
+          date: selectedDate, // Siempre vinculado a la fecha local seleccionada
+          category: category,
+          name: name,
+          sets: sets,
+          reps: reps,
+          weight: weight,
+          volume: volume,
+          duration: duration,
+          calories: calories
+        };
+
+        appData.exercises.push(exerciseItem);
+        saveStorage();
+        e.target.reset();
+        exCategoryInput.value = 'strength';
+        strengthFields.style.display = 'block';
+        cardioFields.style.display = 'none';
+        modeStrengthBtn.classList.add('active');
+        modeCardioBtn.classList.remove('active');
+        strengthSets.value = 3;
+        strengthReps.value = 3;
+        strengthWeight.value = 80;
+        exDuration.value = 15;
+        exCalories.value = 95;
+        updateLiveVolume();
+
+        renderAll();
+        alert('✅ Ejercicio agregado a la sesión con éxito.');
+      });
+    }
+
+    // FORMULARIOS DE COMIDAS Y SUEÑO
+    function setupForms() {
+      document.getElementById('mealForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const meal = {
+          id: 'meal_' + Date.now(),
+          date: selectedDate, // Siempre vinculado a la fecha local seleccionada
+          type: document.getElementById('mealType').value,
+          name: document.getElementById('mealName').value.trim(),
+          calories: parseInt(document.getElementById('mealCalories').value) || 0,
+          protein: parseFloat(document.getElementById('mealProtein').value) || 0,
+          carbs: parseFloat(document.getElementById('mealCarbs').value) || 0,
+          fat: parseFloat(document.getElementById('mealFat').value) || 0
+        };
+
+        appData.meals.push(meal);
+        saveStorage();
+
+        // Autoguardar en el catálogo de alimentos frecuentes
+        saveCustomFood(meal.name, meal.calories, meal.protein, meal.carbs, meal.fat);
+
+        e.target.reset();
+        selectedImageBase64 = null;
+        document.getElementById('photoPreviewBox').style.display = 'none';
+        document.getElementById('analyzePhotoBtn').style.display = 'none';
+        document.getElementById('aiResultMsg').textContent = '';
+        renderAll();
+        alert('✅ Comida registrada con éxito.');
+      });
+
+      document.getElementById('sleepForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const hours = parseFloat(document.getElementById('sleepHours').value) || 0;
+        const quality = document.getElementById('sleepQuality').value;
+        const notes = document.getElementById('sleepNotes').value.trim();
+
+        const existingIdx = appData.sleep.findIndex(s => s.date === selectedDate);
+        if (existingIdx >= 0) {
+          appData.sleep[existingIdx].hours = hours;
+          appData.sleep[existingIdx].quality = quality;
+          appData.sleep[existingIdx].notes = notes;
+        } else {
+          appData.sleep.push({ id: 'sleep_' + Date.now(), date: selectedDate, hours, quality, notes });
+        }
+        saveStorage();
+        alert('Registro de sueño guardado con éxito.');
+        renderAll();
       });
     }
 
@@ -1100,84 +1270,6 @@
       document.getElementById('bannerDetails').textContent = `TMB: ${mifflinData.tmb} kcal | Gasto Total (TDEE): ${mifflinData.tdee} kcal`;
     }
 
-    function setupForms() {
-      // Comidas
-      document.getElementById('mealForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const meal = {
-          id: 'meal_' + Date.now(),
-          date: selectedDate,
-          type: document.getElementById('mealType').value,
-          name: document.getElementById('mealName').value.trim(),
-          calories: parseInt(document.getElementById('mealCalories').value) || 0,
-          protein: parseFloat(document.getElementById('mealProtein').value) || 0,
-          carbs: parseFloat(document.getElementById('mealCarbs').value) || 0,
-          fat: parseFloat(document.getElementById('mealFat').value) || 0
-        };
-        appData.meals.push(meal);
-        saveStorage();
-
-        // Autoguardado automático en el catálogo de alimentos frecuentes
-        saveCustomFood(meal.name, meal.calories, meal.protein, meal.carbs, meal.fat);
-        e.target.reset();
-        selectedImageBase64 = null;
-        document.getElementById('photoPreviewBox').style.display = 'none';
-        document.getElementById('analyzePhotoBtn').style.display = 'none';
-        document.getElementById('aiResultMsg').textContent = '';
-        renderAll();
-        alert('Comida agregada con éxito.');
-      });
-
-      // Ejercicio
-      document.getElementById('exerciseForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const exercise = {
-          id: 'ex_' + Date.now(),
-          date: selectedDate,
-          type: document.getElementById('exerciseType').value,
-          desc: document.getElementById('exerciseDesc').value.trim(),
-          duration: parseInt(document.getElementById('exerciseDuration').value) || 0,
-          calories: parseInt(document.getElementById('exerciseCalories').value) || 0
-        };
-        appData.exercises.push(exercise);
-        saveStorage();
-        e.target.reset();
-        renderAll();
-        alert('Ejercicio agregado con éxito.');
-      });
-
-      document.getElementById('estimateCalBtn').addEventListener('click', () => {
-        const type = document.getElementById('exerciseType').value;
-        const mins = parseInt(document.getElementById('exerciseDuration').value) || 30;
-        let ratePerMin = 7;
-        if (type.includes('Correr')) ratePerMin = 11;
-        else if (type.includes('Caminata')) ratePerMin = 4.5;
-        else if (type.includes('Pesas')) ratePerMin = 6;
-        else if (type.includes('Ciclismo')) ratePerMin = 8.5;
-        document.getElementById('exerciseCalories').value = Math.round(ratePerMin * mins);
-      });
-
-      // Sueño
-      document.getElementById('sleepForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const hours = parseFloat(document.getElementById('sleepHours').value) || 0;
-        const quality = document.getElementById('sleepQuality').value;
-        const notes = document.getElementById('sleepNotes').value.trim();
-
-        const existingIdx = appData.sleep.findIndex(s => s.date === selectedDate);
-        if (existingIdx >= 0) {
-          appData.sleep[existingIdx].hours = hours;
-          appData.sleep[existingIdx].quality = quality;
-          appData.sleep[existingIdx].notes = notes;
-        } else {
-          appData.sleep.push({ id: 'sleep_' + Date.now(), date: selectedDate, hours, quality, notes });
-        }
-        saveStorage();
-        alert('Registro de sueño guardado con éxito.');
-        renderAll();
-      });
-    }
-
     window.deleteMeal = function(id) { appData.meals = appData.meals.filter(m => m.id !== id); saveStorage(); renderAll(); };
     window.deleteExercise = function(id) { appData.exercises = appData.exercises.filter(e => e.id !== id); saveStorage(); renderAll(); };
 
@@ -1227,7 +1319,7 @@
 
       const dashMealsContainer = document.getElementById('dashMealsList');
       if (dayMeals.length === 0) {
-        dashMealsContainer.innerHTML = '<div class="empty-state">No hay comidas registradas hoy. Ve a "Comidas y Fotos" para añadir.</div>';
+        dashMealsContainer.innerHTML = '<div class="empty-state">No hay comidas registradas en esta fecha.</div>';
       } else {
         dashMealsContainer.innerHTML = dayMeals.map(m => `
           <div class="record-item">
@@ -1246,11 +1338,14 @@
         dashExContainer.innerHTML = '<div class="empty-state">Sin ejercicios registrados hoy.</div>';
       } else {
         dashExContainer.innerHTML = dayExercises.map(e => `
-          <div class="record-item">
+          <div class="record-item" style="border-left: 3px solid ${e.category === 'strength' ? '#0284c7' : '#059669'};">
             <div class="record-info">
-              <span class="record-badge badge-exercise">${e.type}</span>
-              <strong>${escapeHtml(e.desc || e.type)}</strong>
-              <p>${e.duration} minutos</p>
+              <span class="record-badge" style="background:${e.category === 'strength' ? '#e0f2fe; color:#0369a1;' : '#d1fae5; color:#065f46;'}">
+                ${e.category === 'strength' ? '🏋️ Pesas' : '🏃 Cardio'}
+              </span>
+              <strong>${escapeHtml(e.name || e.type)}</strong>
+              ${e.category === 'strength' ? `<p style="font-weight:600; color:#0f172a;">${e.sets} series × ${e.reps} reps @ ${e.weight} kg ${e.volume ? `(${e.volume.toLocaleString()} kg total)` : ''}</p>` : ''}
+              <p style="font-size:0.75rem; color:var(--text-muted);">${e.duration} min | -${e.calories} kcal</p>
             </div>
             <div class="record-value" style="color:var(--secondary); font-size:0.9rem;">-${e.calories} kcal</div>
           </div>
@@ -1283,19 +1378,44 @@
     function renderExercisesList() {
       const container = document.getElementById('exercisesFullList');
       const dayExercises = appData.exercises.filter(e => e.date === selectedDate);
+
+      const totalMins = dayExercises.reduce((acc, e) => acc + (e.duration || 0), 0);
+      const totalCals = dayExercises.reduce((acc, e) => acc + (e.calories || 0), 0);
+      const totalVol = dayExercises.reduce((acc, e) => acc + (e.volume || 0), 0);
+
+      const timeElem = document.getElementById('exSessionTime');
+      const countElem = document.getElementById('exSessionCount');
+      const volElem = document.getElementById('exSessionVolume');
+      const calElem = document.getElementById('exSessionCalories');
+
+      if (timeElem) timeElem.innerHTML = `${totalMins} <span style="font-size:1rem; font-weight:500;">min</span>`;
+      if (countElem) countElem.textContent = dayExercises.length;
+      if (volElem) volElem.innerHTML = `${totalVol.toLocaleString()} <span style="font-size:1rem; font-weight:500;">kg</span>`;
+      if (calElem) calElem.textContent = totalCals.toLocaleString() + ' kcal';
+
       if (dayExercises.length === 0) {
-        container.innerHTML = '<div class="empty-state">No hay ejercicios registrados para la fecha seleccionada.</div>';
+        container.innerHTML = '<div class="empty-state">No hay ejercicios registrados en la sesión de hoy.</div>';
         return;
       }
+
       container.innerHTML = dayExercises.map(e => `
-        <div class="record-item">
+        <div class="record-item" style="border-left: 4px solid ${e.category === 'strength' ? '#0284c7' : '#059669'};">
           <div class="record-info">
-            <span class="record-badge badge-exercise">${e.type}</span>
-            <span style="font-weight:600;">${escapeHtml(e.desc || e.type)}</span>
-            <p>Duración: ${e.duration} min</p>
+            <span class="record-badge" style="background:${e.category === 'strength' ? '#e0f2fe; color:#0369a1;' : '#d1fae5; color:#065f46;'}">
+              ${e.category === 'strength' ? '🏋️ Fuerza' : '🏃 Cardio'}
+            </span>
+            <strong style="font-size:0.95rem;">${escapeHtml(e.name || e.type)}</strong>
+            ${e.category === 'strength' ? `
+              <p style="color:#0f172a; font-weight:600; font-size:0.85rem; margin:2px 0;">
+                📊 ${e.sets} series × ${e.reps} reps con ${e.weight} kg
+                ${e.volume ? `<span style="color:#0284c7; margin-left:8px;">(Volumen: ${e.volume.toLocaleString()} kg)</span>` : ''}
+              </p>
+            ` : ''}
+            <p style="font-size:0.78rem; color:var(--text-muted);">
+              ⏱️ ${e.duration} min | 🔥 -${e.calories} kcal
+            </p>
           </div>
           <div style="display:flex; align-items:center; gap:10px;">
-            <div class="record-value" style="color:var(--secondary);">${e.calories} kcal</div>
             <button class="btn btn-danger-outline" onclick="deleteExercise('${e.id}')" title="Eliminar">🗑️</button>
           </div>
         </div>
@@ -1332,11 +1452,12 @@
 
     function getPeriodDates(daysCount) {
       const dates = [];
-      const curr = new Date(selectedDate + 'T00:00:00');
+      const parts = selectedDate.split('-');
+      const curr = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       for (let i = daysCount - 1; i >= 0; i--) {
         const d = new Date(curr);
         d.setDate(curr.getDate() - i);
-        dates.push(d.toISOString().split('T')[0]);
+        dates.push(getLocalDateString(d));
       }
       return dates;
     }
@@ -1515,11 +1636,11 @@
       });
 
       document.getElementById('exportDataBtn').addEventListener('click', () => {
-        const fullBackup = { exportDate: new Date().toISOString(), settings: appSettings, mifflin: mifflinData, data: appData };
+        const fullBackup = { exportDate: getLocalDateString(), settings: appSettings, mifflin: mifflinData, data: appData, customFoods: userCustomFoods };
         const blob = new Blob([JSON.stringify(fullBackup, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.href = url;
-        a.download = `vitaltrack_respaldo_${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `vitaltrack_respaldo_${getLocalDateString()}.json`;
         a.click(); URL.revokeObjectURL(url);
       });
 
@@ -1535,6 +1656,7 @@
             if (parsed.data && parsed.data.meals) {
               appData = parsed.data;
               if (parsed.settings) appSettings = parsed.settings;
+              if (parsed.customFoods) userCustomFoods = parsed.customFoods;
               saveStorage(); alert('Datos importados con éxito.'); renderAll();
             }
           } catch (err) { alert('Error leyendo el archivo JSON.'); }
@@ -1562,15 +1684,14 @@
       return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
 
-    // Registro de Service Worker para PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js', { scope: './' })
           .then(function(reg) {
-            console.log('VitalTrack PWA: Service Worker activo y registrado con éxito');
+            console.log('VitalTrack PWA: Service Worker activo');
           })
           .catch(function(err) {
-            console.log('Error al registrar Service Worker:', err);
+            console.log('Error SW:', err);
           });
       });
     }
