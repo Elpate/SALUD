@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vitaltrack-v3';
+const CACHE_NAME = 'vitaltrack-v5';
 const URLS_TO_CACHE = [
   './',
   './index.html',
@@ -32,6 +32,16 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) return cachedResponse;
       return fetch(event.request).catch(() => caches.match('./index.html'));
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+      for (const c of list) { if ('focus' in c) return c.focus(); }
+      return self.clients.openWindow('./index.html');
     })
   );
 });

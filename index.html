@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1e293b">
+  <meta name="theme-color" content="#0f2a35">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VitalTrack Pro: Calorías, Ejercicio de Fuerza y Salud</title>
+  <title>VitalTrack Pro: Calorías, Ayuno y Salud</title>
   <style>
     :root {
       --primary: #2563eb;
@@ -145,6 +145,21 @@
     .summary-table th, .summary-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); text-align: left; }
     .summary-table th { background: #f8fafc; font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
     .summary-table td.numeric { text-align: right; font-weight: 600; }
+
+    .metric-card.fasting::before { background-color: #84cc16; }
+    .fast-hero { text-align: center; padding: 8px 0 4px; }
+    .fast-ring { position: relative; width: 220px; height: 220px; margin: 0 auto 14px; }
+    .fast-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .fast-ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .fast-timer { font-size: 2rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .fast-state { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .fast-times { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 14px; text-align: left; }
+    .fast-times div { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; color: var(--text-muted); }
+    .fast-times strong { display: block; color: var(--text); font-size: 0.95rem; }
+    .btn-lime { background: #65a30d; color: white; }
+    .btn-lime:hover { background: #4d7c0f; }
+    .badge-fast { background: #ecfccb; color: #3f6212; }
+    .badge-fast-active { background: #fef9c3; color: #854d0e; }
   </style>
 </head>
 <body>
@@ -152,8 +167,8 @@
   <header>
     <div class="header-container">
       <div class="header-title">
-        <h1><span>🥗</span> VitalTrack Pro (Mifflin-St Jeor & IA)</h1>
-        <p>Nutrición, Calorías por Foto, Ejercicios de Fuerza y Sueño</p>
+        <h1><img src="icon-192.png" alt="" style="width:30px;height:30px;border-radius:8px;"> VitalTrack Pro</h1>
+        <p>Nutrición, Calorías por Foto, Ejercicio, Sueño y Ayuno Intermitente</p>
       </div>
       <div class="date-navigator">
         <button id="prevDayBtn" title="Día anterior">◀</button>
@@ -171,6 +186,7 @@
       <button class="tab-btn" data-tab="tab-exercise">🏋️ Ejercicios y Sesión</button>
       <button class="tab-btn" data-tab="tab-mifflin">🧮 Mifflin-St Jeor</button>
       <button class="tab-btn" data-tab="tab-sleep">🌙 Sueño</button>
+      <button class="tab-btn" data-tab="tab-fasting">⏳ Ayuno</button>
       <button class="tab-btn" data-tab="tab-stats">📈 Estadísticas</button>
       <button class="tab-btn" data-tab="tab-settings">⚙️ Ajustes / API</button>
     </div>
@@ -207,6 +223,11 @@
           <div class="metric-label">Sueño Anoche</div>
           <div class="metric-value" id="dashSleep">0<span style="font-size: 1rem; font-weight: 500;"> hrs</span></div>
           <div class="metric-sub" id="dashSleepQuality">Calidad: No registrada</div>
+        </div>
+        <div class="metric-card fasting" style="cursor:pointer;" onclick="goToTab('tab-fasting')">
+          <div class="metric-label">Ayuno</div>
+          <div class="metric-value" id="dashFast">--</div>
+          <div class="metric-sub" id="dashFastSub">Sin ayuno activo</div>
         </div>
       </div>
 
@@ -598,6 +619,76 @@
       </div>
     </div>
 
+    <!-- TAB: AYUNO INTERMITENTE -->
+    <div id="tab-fasting" class="tab-content">
+      <div class="section-grid two-cols">
+        <div class="card">
+          <div class="card-title"><span>⏳</span> Ayuno Intermitente</div>
+          <div class="fast-hero">
+            <div class="fast-ring">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="#e2e8f0" stroke-width="10"></circle>
+                <circle id="fastRingProgress" cx="60" cy="60" r="52" fill="none" stroke="#65a30d" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"></circle>
+              </svg>
+              <div class="fast-ring-center">
+                <div class="fast-state" id="fastState">Sin ayuno activo</div>
+                <div class="fast-timer" id="fastTimer">00:00:00</div>
+                <div class="fast-state" id="fastPct" style="text-transform:none;">Meta: 16 h</div>
+              </div>
+            </div>
+          </div>
+          <div class="fast-times">
+            <div>Inicio<strong id="fastStartLabel">--</strong></div>
+            <div>Fin estimado<strong id="fastEndLabel">--</strong></div>
+          </div>
+          <div class="form-group">
+            <label for="fastProtocol">Protocolo (horas de ayuno)</label>
+            <select id="fastProtocol" class="form-control">
+              <option value="12">12:12 (12 h)</option>
+              <option value="14">14:10 (14 h)</option>
+              <option value="16" selected>16:8 (16 h)</option>
+              <option value="18">18:6 (18 h)</option>
+              <option value="20">20:4 (20 h)</option>
+              <option value="24">OMAD / 24 h</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="fastStartBtn" class="btn btn-lime" style="flex:1;">▶ Empezar ayuno ahora</button>
+            <button id="fastEndBtn" class="btn btn-danger-outline" style="flex:1; padding:10px 16px; font-size:0.92rem; display:none;">■ Terminar ayuno</button>
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button id="fastNotifBtn" type="button" class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px;">🔔 Activar avisos</button>
+            <span id="fastNotifStatus" style="font-size:0.78rem; color:var(--text-muted);"></span>
+          </div>
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-top:10px;">
+            Los ayunos se cuentan en tus estadísticas por la fecha en que terminan.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>✍️</span> Registrar ayuno manualmente</div>
+          <form id="fastManualForm">
+            <div class="form-group">
+              <label for="fastManualStart">Inicio del ayuno</label>
+              <input type="datetime-local" id="fastManualStart" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="fastManualEnd">Fin del ayuno</label>
+              <input type="datetime-local" id="fastManualEnd" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-secondary" style="width:100%;">Guardar ayuno</button>
+          </form>
+
+          <div style="margin-top:18px;">
+            <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px;">HISTORIAL RECIENTE</div>
+            <div class="records-list" id="fastHistoryList">
+              <div class="empty-state">Aún no hay ayunos registrados.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- TAB 6: ESTADÍSTICAS -->
     <div id="tab-stats" class="tab-content">
       <div class="stats-header">
@@ -632,6 +723,11 @@
           <div class="metric-value" id="statsAvgSleep">0<span style="font-size:1rem; font-weight:500;"> h</span></div>
           <div class="metric-sub"><span id="statsSleepDaysCount">0</span> días registrados</div>
         </div>
+        <div class="metric-card fasting">
+          <div class="metric-label">Promedio de Ayuno</div>
+          <div class="metric-value" id="statsAvgFast">0 h</div>
+          <div class="metric-sub"><span id="statsFastCount">0</span> ayunos terminados</div>
+        </div>
       </div>
 
       <div class="chart-container">
@@ -656,6 +752,7 @@
                 <th>Balance Neto</th>
                 <th>Tiempo Ejercicio</th>
                 <th>Sueño</th>
+                <th>Ayuno</th>
               </tr>
             </thead>
             <tbody id="statsTableBody"></tbody>
@@ -746,7 +843,8 @@
       'pollo_brasa': { name: 'Pollo a la brasa (pieza)', cal100: 190, p100: 22.5, c100: 0, f100: 11 }
     };
 
-    let appData = { meals: [], exercises: [], sleep: [] };
+    let appData = { meals: [], exercises: [], sleep: [], fasts: [] };
+    let fastTicker = null;
     let appSettings = { calGoal: 2000, sleepGoal: 8 };
     let mifflinData = { gender: 'male', age: 30, weight: 75, height: 175, activity: 1.55, goal: 'maintain', tmb: 1694, tdee: 2625, calculatedGoal: 2625 };
     let statsPeriodDays = 7;
@@ -762,6 +860,7 @@
       setupExerciseModule();
       setupForms();
       setupStatsControls();
+      setupFasting();
       setupSettings();
       renderAll();
     }
@@ -770,6 +869,7 @@
       try {
         const stored = localStorage.getItem(DB_KEY);
         if (stored) appData = JSON.parse(stored);
+        if (!Array.isArray(appData.fasts)) appData.fasts = [];
         const storedSettings = localStorage.getItem(SETTINGS_KEY);
         if (storedSettings) appSettings = JSON.parse(storedSettings);
         const storedMifflin = localStorage.getItem(MIFFLIN_KEY);
@@ -1278,6 +1378,7 @@
       renderMealsList();
       renderExercisesList();
       renderSleepDetails();
+      renderFasting();
       renderStats();
       displayMifflinResults();
     }
@@ -1464,7 +1565,7 @@
 
     function renderStats() {
       const dates = getPeriodDates(statsPeriodDays);
-      let totalConsumed = 0, totalBurned = 0, totalSleep = 0, sleepCount = 0;
+      let totalConsumed = 0, totalBurned = 0, totalSleep = 0, sleepCount = 0, totalFast = 0, fastCount = 0;
 
       const dailyStats = dates.map(dStr => {
         const dayMeals = appData.meals.filter(m => m.date === dStr);
@@ -1475,12 +1576,15 @@
         const burned = dayExercises.reduce((acc, e) => acc + (e.calories || 0), 0);
         const duration = dayExercises.reduce((acc, e) => acc + (e.duration || 0), 0);
         const sleepHours = daySleep ? daySleep.hours : 0;
+        const dayFasts = appData.fasts.filter(f => f.end && getLocalDateString(f.end) === dStr);
+        const fastHours = dayFasts.reduce((acc, f) => acc + (f.end - f.start) / 3600000, 0);
+        totalFast += fastHours; fastCount += dayFasts.length;
 
         totalConsumed += consumed;
         totalBurned += burned;
         if (daySleep && daySleep.hours > 0) { totalSleep += daySleep.hours; sleepCount++; }
 
-        return { date: dStr, consumed, burned, net: consumed - burned, duration, sleep: sleepHours };
+        return { date: dStr, consumed, burned, net: consumed - burned, duration, sleep: sleepHours, fast: fastHours };
       });
 
       const avgConsumed = Math.round(totalConsumed / statsPeriodDays);
@@ -1495,6 +1599,8 @@
       document.getElementById('statsTotalNet').textContent = (netTotal > 0 ? '+' : '') + netTotal.toLocaleString() + ' kcal';
       document.getElementById('statsAvgSleep').textContent = avgSleep + ' h';
       document.getElementById('statsSleepDaysCount').textContent = sleepCount;
+      document.getElementById('statsAvgFast').textContent = (fastCount > 0 ? (totalFast / fastCount).toFixed(1) : '0') + ' h';
+      document.getElementById('statsFastCount').textContent = fastCount;
 
       renderCaloriesChart(dailyStats);
       renderSleepChart(dailyStats);
@@ -1614,6 +1720,7 @@
           <td class="numeric">${(d.net > 0 ? '+' : '') + d.net.toLocaleString()} kcal</td>
           <td>${d.duration > 0 ? d.duration + ' min' : '-'}</td>
           <td>${d.sleep > 0 ? d.sleep + ' h' : '-'}</td>
+          <td>${d.fast > 0 ? d.fast.toFixed(1) + ' h' : '-'}</td>
         </tr>
       `).join('');
     }
@@ -1655,6 +1762,7 @@
             const parsed = JSON.parse(event.target.result);
             if (parsed.data && parsed.data.meals) {
               appData = parsed.data;
+              if (!Array.isArray(appData.fasts)) appData.fasts = [];
               if (parsed.settings) appSettings = parsed.settings;
               if (parsed.customFoods) userCustomFoods = parsed.customFoods;
               saveStorage(); alert('Datos importados con éxito.'); renderAll();
@@ -1666,10 +1774,209 @@
 
       document.getElementById('clearAllDataBtn').addEventListener('click', () => {
         if (confirm('¿Eliminar todos los registros?')) {
-          appData = { meals: [], exercises: [], sleep: [] };
+          appData = { meals: [], exercises: [], sleep: [], fasts: [] };
           saveStorage(); renderAll();
         }
       });
+    }
+
+
+    // ===== AYUNO INTERMITENTE =====
+    function getActiveFast() { return appData.fasts.find(f => !f.end) || null; }
+
+    function fmtDuration(ms) {
+      const t = Math.max(0, Math.floor(ms / 1000));
+      const h = String(Math.floor(t / 3600)).padStart(2, '0');
+      const m = String(Math.floor((t % 3600) / 60)).padStart(2, '0');
+      const s = String(t % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function fmtDateTime(ms) {
+      return new Date(ms).toLocaleString('es-PE', { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function toLocalInputValue(ms) {
+      const d = new Date(ms);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function setupFasting() {
+      document.getElementById('fastStartBtn').addEventListener('click', () => {
+        if (getActiveFast()) return;
+        requestFastNotifications();
+        appData.fasts.push({
+          id: 'f_' + Date.now(),
+          start: Date.now(),
+          end: null,
+          goal: parseInt(document.getElementById('fastProtocol').value, 10) || 16
+        });
+        saveStorage(); renderAll();
+      });
+
+      document.getElementById('fastEndBtn').addEventListener('click', () => {
+        const active = getActiveFast();
+        if (!active) return;
+        active.end = Date.now();
+        saveStorage(); renderAll();
+      });
+
+      document.getElementById('fastProtocol').addEventListener('change', () => {
+        const active = getActiveFast();
+        if (active) {
+          active.goal = parseInt(document.getElementById('fastProtocol').value, 10) || 16;
+          saveStorage();
+        }
+        renderFasting();
+      });
+
+      const endInput = document.getElementById('fastManualEnd');
+      const startInput = document.getElementById('fastManualStart');
+      endInput.value = toLocalInputValue(Date.now());
+      startInput.value = toLocalInputValue(Date.now() - 16 * 3600000);
+
+      document.getElementById('fastManualForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const start = new Date(startInput.value).getTime();
+        const end = new Date(endInput.value).getTime();
+        if (!start || !end || end <= start) { alert('La hora de fin debe ser posterior al inicio.'); return; }
+        appData.fasts.push({
+          id: 'f_' + Date.now(),
+          start, end,
+          goal: parseInt(document.getElementById('fastProtocol').value, 10) || 16
+        });
+        saveStorage(); renderAll();
+      });
+
+      document.getElementById('fastNotifBtn').addEventListener('click', requestFastNotifications);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) updateFastTimer(); });
+      updateNotifStatus();
+      fastTicker = setInterval(updateFastTimer, 1000);
+    }
+
+    function updateNotifStatus() {
+      const el = document.getElementById('fastNotifStatus');
+      const btn = document.getElementById('fastNotifBtn');
+      if (!el) return;
+      if (!('Notification' in window)) { el.textContent = 'Este navegador no soporta avisos.'; btn.style.display = 'none'; return; }
+      if (Notification.permission === 'granted') { el.textContent = 'Avisos activados ✓'; btn.style.display = 'none'; }
+      else if (Notification.permission === 'denied') { el.textContent = 'Avisos bloqueados: actívalos en los ajustes del navegador.'; btn.style.display = 'none'; }
+      else { el.textContent = 'Te avisaremos al cumplir tu meta.'; btn.style.display = ''; }
+    }
+
+    function requestFastNotifications() {
+      if (!('Notification' in window) || Notification.permission !== 'default') { updateNotifStatus(); return; }
+      Notification.requestPermission().then(updateNotifStatus).catch(updateNotifStatus);
+    }
+
+    function notifyFastGoal(fast) {
+      const title = '🎉 ¡Meta de ayuno cumplida!';
+      const body = `Completaste ${fast.goal} horas de ayuno. Ya puedes terminar tu ayuno en VitalTrack.`;
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const opts = { body, icon: 'icon-192.png', badge: 'icon-192.png', tag: 'vitaltrack-fast-goal', requireInteraction: true };
+        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts)).catch(() => { try { new Notification(title, opts); } catch (e) {} });
+        } else {
+          try { new Notification(title, opts); } catch (e) {}
+        }
+      }
+      showFastBanner(`${title} ${body}`);
+    }
+
+    function showFastBanner(text) {
+      let b = document.getElementById('fastBanner');
+      if (!b) {
+        b = document.createElement('div');
+        b.id = 'fastBanner';
+        b.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:300;background:#3f6212;color:#fff;padding:14px 16px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:0.9rem;font-weight:600;cursor:pointer;';
+        b.addEventListener('click', () => { b.remove(); goToTab('tab-fasting'); });
+        document.body.appendChild(b);
+      }
+      b.textContent = text;
+    }
+
+    window.deleteFast = function(id) {
+      appData.fasts = appData.fasts.filter(f => f.id !== id);
+      saveStorage(); renderAll();
+    };
+
+    function updateFastTimer() {
+      const active = getActiveFast();
+      const ring = document.getElementById('fastRingProgress');
+      const CIRC = 326.7;
+      if (!active) {
+        document.getElementById('fastTimer').textContent = '00:00:00';
+        ring.style.strokeDashoffset = CIRC;
+        document.getElementById('dashFast').textContent = '--';
+        return;
+      }
+      const elapsed = Date.now() - active.start;
+      const goalMs = active.goal * 3600000;
+      const pct = Math.min(elapsed / goalMs, 1);
+      if (elapsed >= goalMs && !active.notified) {
+        active.notified = true;
+        saveStorage();
+        notifyFastGoal(active);
+      }
+      document.getElementById('fastTimer').textContent = fmtDuration(elapsed);
+      ring.style.strokeDashoffset = CIRC * (1 - pct);
+      document.getElementById('fastPct').textContent = elapsed >= goalMs
+        ? `¡Meta de ${active.goal} h cumplida!`
+        : `${Math.round(pct * 100)}% de ${active.goal} h`;
+      document.getElementById('dashFast').textContent = fmtDuration(elapsed).slice(0, 5) + ' h';
+    }
+
+    function renderFasting() {
+      const active = getActiveFast();
+      const startBtn = document.getElementById('fastStartBtn');
+      const endBtn = document.getElementById('fastEndBtn');
+      const protocol = document.getElementById('fastProtocol');
+
+      if (active) {
+        startBtn.style.display = 'none';
+        endBtn.style.display = '';
+        protocol.value = String(active.goal);
+        document.getElementById('fastState').textContent = 'Ayunando';
+        document.getElementById('fastStartLabel').textContent = fmtDateTime(active.start);
+        document.getElementById('fastEndLabel').textContent = fmtDateTime(active.start + active.goal * 3600000);
+        document.getElementById('dashFastSub').textContent = `Meta ${active.goal} h · desde ${fmtDateTime(active.start)}`;
+      } else {
+        startBtn.style.display = '';
+        endBtn.style.display = 'none';
+        document.getElementById('fastState').textContent = 'Sin ayuno activo';
+        document.getElementById('fastStartLabel').textContent = '--';
+        document.getElementById('fastEndLabel').textContent = '--';
+        document.getElementById('fastPct').textContent = `Meta: ${protocol.value} h`;
+        const last = appData.fasts.filter(f => f.end).sort((a, b) => b.end - a.end)[0];
+        document.getElementById('dashFastSub').textContent = last
+          ? `Último: ${((last.end - last.start) / 3600000).toFixed(1)} h (terminó ${fmtDateTime(last.end)})`
+          : 'Sin ayuno activo';
+      }
+
+      const list = document.getElementById('fastHistoryList');
+      const done = appData.fasts.filter(f => f.end).sort((a, b) => b.end - a.end).slice(0, 20);
+      if (active) done.unshift(active);
+      if (done.length === 0) {
+        list.innerHTML = '<div class="empty-state">Aún no hay ayunos registrados.</div>';
+      } else {
+        list.innerHTML = done.map(f => {
+          const isActive = !f.end;
+          const hours = ((isActive ? Date.now() : f.end) - f.start) / 3600000;
+          const met = hours >= f.goal;
+          return `
+            <div class="record-item">
+              <div class="record-info">
+                <span class="record-badge ${isActive ? 'badge-fast-active' : 'badge-fast'}">${isActive ? 'En curso' : (met ? '✓ Meta cumplida' : 'Meta ' + f.goal + ' h')}</span>
+                <strong style="font-size:0.9rem;">${hours.toFixed(1)} h</strong>
+                <p>▶ ${fmtDateTime(f.start)}${isActive ? '' : ' &nbsp; ■ ' + fmtDateTime(f.end)}</p>
+              </div>
+              <button class="btn btn-danger-outline" onclick="deleteFast('${f.id}')" title="Eliminar">🗑️</button>
+            </div>`;
+        }).join('');
+      }
+      updateFastTimer();
     }
 
     function getBadgeClass(type) {
