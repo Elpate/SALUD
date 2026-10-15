@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0f2a35">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -169,6 +171,128 @@
     .macro-value small { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
     .macro-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: #e2e8f0; margin-top: 10px; }
     .macro-bar span { display: block; height: 100%; transition: width 0.4s ease; }
+
+    /* ===== REDISEÑO: estilo limpio, lavanda y tarjetas suaves ===== */
+    :root {
+      --primary: #6f78f0;
+      --primary-hover: #5b64e0;
+      --primary-soft: #eceefe;
+      --secondary: #22a06b;
+      --warning: #e8963a;
+      --danger: #e05252;
+      --purple: #8b5cf6;
+      --bg: #f4f5f9;
+      --card-bg: #ffffff;
+      --text: #272b3d;
+      --text-muted: #7a8097;
+      --border: #e7e9f1;
+      --radius: 18px;
+      --shadow: 0 2px 14px rgba(39, 43, 61, 0.06);
+      --font-stack: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); }
+
+    header { background: #ffffff; color: var(--text); box-shadow: 0 1px 0 var(--border); padding: 14px 16px; }
+    .header-title h1 { font-size: 1.2rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .header-title p { color: var(--text-muted); font-size: 0.78rem; }
+    .date-navigator { background: var(--primary-soft); padding: 4px 8px; }
+    .date-navigator button { color: var(--primary); border-radius: 999px; }
+    .date-navigator button:hover { background: rgba(111, 120, 240, 0.15); }
+    .date-navigator input[type="date"] { color: var(--text); color-scheme: light; font-weight: 700; }
+    #todayBtn { background: var(--primary) !important; color: #fff !important; }
+
+    /* Pestañas: pastillas arriba en escritorio, barra inferior en móvil */
+    .tabs-wrapper { margin-top: 14px; }
+    .nav-tabs { border-bottom: none; gap: 8px; padding-bottom: 4px; }
+    .tab-btn { background: #ffffff; border: 1px solid var(--border); border-radius: 999px; padding: 9px 16px; color: var(--text-muted); font-weight: 600; }
+    .tab-btn:hover { background: var(--primary-soft); color: var(--primary); }
+    .tab-btn.active { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+    .tab-btn .tab-ico { font-size: 1.05rem; line-height: 1; }
+
+    @media (max-width: 767px) {
+      body { padding-bottom: 86px; }
+      .tabs-wrapper { position: fixed; left: 0; right: 0; bottom: 0; margin: 0; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); background: #ffffff; border-top: 1px solid var(--border); z-index: 200; box-shadow: 0 -4px 18px rgba(39, 43, 61, 0.06); }
+      .nav-tabs { gap: 2px; padding: 0; scrollbar-width: none; }
+      .nav-tabs::-webkit-scrollbar { display: none; }
+      .tab-btn { flex: 0 0 auto; min-width: 74px; flex-direction: column; gap: 3px; background: transparent; border: none; border-radius: 12px; padding: 7px 8px; font-size: 0.66rem; }
+      .tab-btn .tab-ico { font-size: 1.35rem; }
+      .tab-btn.active { background: var(--primary-soft); color: var(--primary); }
+      .tab-btn:hover { background: var(--primary-soft); }
+      .header-container { gap: 8px; }
+      #fastBanner { bottom: 96px !important; }
+      .header-title p { display: none; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .metric-card { padding: 14px; }
+      .metric-value { font-size: 1.5rem; }
+      .metric-label { font-size: 0.66rem; }
+      .metric-sub { font-size: 0.72rem; }
+      .macros-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .mifflin-banner h4 { font-size: 0.9rem; }
+      .card { padding: 18px; }
+    }
+
+    /* Tarjetas */
+    .metric-card, .card, .progress-section, .chart-container, .macro-card { border: none; box-shadow: var(--shadow); border-radius: var(--radius); }
+    .metric-card::before { display: none; }
+    .metric-card { padding: 18px 18px 16px; }
+    .metric-label { color: var(--text-muted); font-size: 0.72rem; }
+    .metric-value { font-size: 1.9rem; color: var(--text); }
+    .metrics-grid { grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); }
+    .metric-card.consumed { background: linear-gradient(160deg, #eef0ff 0%, #ffffff 70%); }
+    .metric-card.burned { background: linear-gradient(160deg, #e7f7ef 0%, #ffffff 70%); }
+    .metric-card.balance { background: linear-gradient(160deg, #fff3e3 0%, #ffffff 70%); }
+    .metric-card.sleep { background: linear-gradient(160deg, #f1ebff 0%, #ffffff 70%); }
+    .metric-card.fasting { background: linear-gradient(160deg, #f0f9dc 0%, #ffffff 70%); }
+    .macro-card { border-top: none; }
+    .macro-card.protein { background: #fff0f0; }
+    .macro-card.carbs { background: #fff6e6; }
+    .macro-card.fat { background: #edf3ff; }
+    .macro-bar { height: 10px; }
+
+    .mifflin-banner { background: var(--primary-soft); border: none; border-radius: var(--radius); }
+    .mifflin-banner h4 { color: var(--primary-hover); }
+    .mifflin-banner p { color: var(--text-muted); }
+    .mifflin-banner .btn-outline { border: none !important; border-radius: 12px; color: var(--primary); font-weight: 700; }
+
+    .card-title { font-size: 1.05rem; font-weight: 800; }
+
+    /* Progreso */
+    .progress-bar-bg { height: 16px; background: #e9ebf5; }
+    .progress-bar-fill { background: linear-gradient(90deg, #8f96ff, #6f78f0); }
+    .progress-bar-fill.warning { background: linear-gradient(90deg, #f6b24f, #e8963a); }
+    .progress-bar-fill.danger { background: linear-gradient(90deg, #f27a7a, #e05252); }
+
+    /* Formularios y botones */
+    .form-control { background: #ffffff; border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; font-size: 0.95rem; }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(111, 120, 240, 0.15); }
+    .form-group label { color: var(--text); font-weight: 700; }
+    .btn { border-radius: 14px; padding: 13px 18px; font-weight: 700; }
+    .btn-primary, .btn-purple { background: var(--primary); }
+    .btn-primary:hover, .btn-purple:hover { background: var(--primary-hover); }
+    .btn-outline { border: 1.5px solid var(--border); background: #fff; }
+    .btn-outline:hover { background: var(--primary-soft); }
+    .btn-danger-outline { border-radius: 10px; }
+
+    /* Listas */
+    .record-item { background: #ffffff; border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; }
+    .record-item:hover { background: #fafaff; border-color: #d9dcf7; }
+    .empty-state { background: #fafaff; border-radius: 14px; }
+    .food-helper-box { background: #fafaff; border: 1.5px dashed #d9dcf7; border-radius: 16px; }
+    .ai-box { border-radius: 16px; }
+
+    /* Estadisticas y tablas */
+    .summary-table th { background: #f6f7fc; color: var(--text-muted); }
+    .period-selector { background: #e9ebf5; border-radius: 12px; }
+    .period-btn { border-radius: 10px; }
+    .period-btn.active { color: var(--primary); }
+
+    /* Ayuno */
+    .btn-lime { background: var(--primary); }
+    .btn-lime:hover { background: var(--primary-hover); }
+    #fastRingProgress { stroke: var(--primary); }
+    .fast-ring { width: 230px; height: 230px; }
+    .fast-times div { background: #fafaff; border: 1.5px solid var(--border); border-radius: 14px; }
+    .fast-timer { font-size: 2.2rem; }
   </style>
 </head>
 <body>
@@ -191,13 +315,13 @@
   <div class="tabs-wrapper">
     <div class="nav-tabs">
       <button class="tab-btn active" data-tab="tab-dashboard">📊 Dashboard</button>
-      <button class="tab-btn" data-tab="tab-meals">🍎 Comidas y Fotos</button>
-      <button class="tab-btn" data-tab="tab-exercise">🏋️ Ejercicios y Sesión</button>
-      <button class="tab-btn" data-tab="tab-mifflin">🧮 Mifflin-St Jeor</button>
+      <button class="tab-btn" data-tab="tab-meals">🍎 Comidas</button>
+      <button class="tab-btn" data-tab="tab-exercise">🏋️ Ejercicio</button>
+      <button class="tab-btn" data-tab="tab-mifflin">🧮 Metas</button>
       <button class="tab-btn" data-tab="tab-sleep">🌙 Sueño</button>
       <button class="tab-btn" data-tab="tab-fasting">⏳ Ayuno</button>
       <button class="tab-btn" data-tab="tab-stats">📈 Estadísticas</button>
-      <button class="tab-btn" data-tab="tab-settings">⚙️ Ajustes / API</button>
+      <button class="tab-btn" data-tab="tab-settings">⚙️ Ajustes</button>
     </div>
   </div>
 
@@ -972,7 +1096,18 @@
       renderAll();
     }
 
+    function decorateTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.querySelector('.tab-ico')) return;
+        const raw = btn.textContent.trim();
+        const sp = raw.indexOf(' ');
+        if (sp < 0) return;
+        btn.innerHTML = `<span class="tab-ico">${raw.slice(0, sp)}</span><span class="tab-lbl">${raw.slice(sp + 1)}</span>`;
+      });
+    }
+
     function setupTabs() {
+      decorateTabs();
       const btns = document.querySelectorAll('.tab-btn');
       btns.forEach(btn => {
         btn.addEventListener('click', () => {

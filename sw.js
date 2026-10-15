@@ -1,4 +1,4 @@
-const CACHE_NAME = 'saludenordenpro-v8';
+const CACHE_NAME = 'saludenordenpro-v9';
 const URLS_TO_CACHE = [
   './',
   './index.html',
