@@ -160,6 +160,15 @@
     .btn-lime:hover { background: #4d7c0f; }
     .badge-fast { background: #ecfccb; color: #3f6212; }
     .badge-fast-active { background: #fef9c3; color: #854d0e; }
+    .macros-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .macro-card { background: var(--card-bg); padding: 14px 16px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); border-top: 4px solid; }
+    .macro-card.protein { border-top-color: #ef4444; }
+    .macro-card.carbs { border-top-color: #f59e0b; }
+    .macro-card.fat { border-top-color: #3b82f6; }
+    .macro-value { font-size: 1.5rem; font-weight: 800; }
+    .macro-value small { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); }
+    .macro-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: #e2e8f0; margin-top: 10px; }
+    .macro-bar span { display: block; height: 100%; transition: width 0.4s ease; }
   </style>
 </head>
 <body>
@@ -231,6 +240,33 @@
         </div>
       </div>
 
+      <div class="macros-grid">
+        <div class="macro-card protein">
+          <div class="metric-label">Proteínas</div>
+          <div class="macro-value"><span id="dashProtein">0</span> <small>g</small></div>
+          <div class="metric-sub"><span id="dashProteinPct">0</span>% de las kcal</div>
+        </div>
+        <div class="macro-card carbs">
+          <div class="metric-label">Carbohidratos</div>
+          <div class="macro-value"><span id="dashCarbs">0</span> <small>g</small></div>
+          <div class="metric-sub"><span id="dashCarbsPct">0</span>% de las kcal</div>
+        </div>
+        <div class="macro-card fat">
+          <div class="metric-label">Grasas</div>
+          <div class="macro-value"><span id="dashFat">0</span> <small>g</small></div>
+          <div class="metric-sub"><span id="dashFatPct">0</span>% de las kcal</div>
+        </div>
+        <div class="macro-card" style="border-top-color:#2563eb;">
+          <div class="metric-label">Total del día</div>
+          <div class="macro-value"><span id="dashTotalCal">0</span> <small>kcal</small></div>
+          <div class="macro-bar" title="Reparto de calorías: proteínas / carbohidratos / grasas">
+            <span id="barProtein" style="background:#ef4444; width:0%;"></span>
+            <span id="barCarbs" style="background:#f59e0b; width:0%;"></span>
+            <span id="barFat" style="background:#3b82f6; width:0%;"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="progress-section">
         <div class="progress-header">
           <span>Consumo Diario vs. Meta Mifflin-St Jeor</span>
@@ -257,6 +293,23 @@
           <div id="dashSleepSummary" style="font-size:0.88rem; padding:10px; background:#f8fafc; border-radius:8px; border:1px solid var(--border);">
             No se ha registrado el sueño de la fecha.
           </div>
+        </div>
+      </div>
+          <div class="card">
+        <div class="card-title"><span>📅</span> Calorías y Macros por Día (últimos 7 días)</div>
+        <div style="overflow-x:auto;">
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Calorías</th>
+                <th style="color:#ef4444;">Proteínas</th>
+                <th style="color:#d97706;">Carbohidratos</th>
+                <th style="color:#3b82f6;">Grasas</th>
+              </tr>
+            </thead>
+            <tbody id="dashWeekBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1394,6 +1447,41 @@
       const netCalories = totalConsumed - totalBurned;
 
       document.getElementById('dashConsumed').textContent = totalConsumed.toLocaleString();
+
+      const sumMacro = (key) => Math.round(dayMeals.reduce((acc, m) => acc + (parseFloat(m[key]) || 0), 0) * 10) / 10;
+      const totalProtein = sumMacro('protein');
+      const totalCarbs = sumMacro('carbs');
+      const totalFat = sumMacro('fat');
+      const kP = totalProtein * 4, kC = totalCarbs * 4, kF = totalFat * 9;
+      const kSum = kP + kC + kF;
+      const pctOf = (k) => kSum > 0 ? Math.round((k / kSum) * 100) : 0;
+      document.getElementById('dashProtein').textContent = totalProtein.toLocaleString();
+      document.getElementById('dashCarbs').textContent = totalCarbs.toLocaleString();
+      document.getElementById('dashFat').textContent = totalFat.toLocaleString();
+      document.getElementById('dashProteinPct').textContent = pctOf(kP);
+      document.getElementById('dashCarbsPct').textContent = pctOf(kC);
+      document.getElementById('dashFatPct').textContent = pctOf(kF);
+      document.getElementById('dashTotalCal').textContent = totalConsumed.toLocaleString();
+      document.getElementById('barProtein').style.width = pctOf(kP) + '%';
+      document.getElementById('barCarbs').style.width = pctOf(kC) + '%';
+      document.getElementById('barFat').style.width = pctOf(kF) + '%';
+
+      const weekBody = document.getElementById('dashWeekBody');
+      if (weekBody) {
+        weekBody.innerHTML = getPeriodDates(7).reverse().map(dStr => {
+          const ms = appData.meals.filter(m => m.date === dStr);
+          const sum = (k) => Math.round(ms.reduce((a, m) => a + (parseFloat(m[k]) || 0), 0) * 10) / 10;
+          const cal = ms.reduce((a, m) => a + (m.calories || 0), 0);
+          const isSel = dStr === selectedDate;
+          return `<tr${isSel ? ' style="background:#eff6ff;"' : ''}>
+            <td><strong>${dStr}</strong></td>
+            <td class="numeric" style="color:var(--primary);">${cal.toLocaleString()} kcal</td>
+            <td class="numeric">${sum('protein')} g</td>
+            <td class="numeric">${sum('carbs')} g</td>
+            <td class="numeric">${sum('fat')} g</td>
+          </tr>`;
+        }).join('');
+      }
       document.getElementById('dashBurned').textContent = totalBurned.toLocaleString();
       document.getElementById('dashNet').textContent = (netCalories > 0 ? '+' : '') + netCalories.toLocaleString();
       document.getElementById('dashGoalCal').textContent = appSettings.calGoal.toLocaleString();
