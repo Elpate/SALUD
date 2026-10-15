@@ -14,6 +14,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SaludenordenPro: Calorías, Ayuno y Salud</title>
+  <script>try{if(localStorage.getItem('saludenordenpro_theme')!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}</script>
   <style>
     :root {
       --primary: #2563eb;
@@ -293,6 +294,107 @@
     .fast-ring { width: 230px; height: 230px; }
     .fast-times div { background: #fafaff; border: 1.5px solid var(--border); border-radius: 14px; }
     .fast-timer { font-size: 2.2rem; }
+
+    /* ===== DASHBOARD estilo bienestar digital + TEMA OSCURO ===== */
+    :root { --donut-track: #e9ebf5; --wb-hero-1: #e9f6ff; --wb-hero-2: #eef0ff; }
+    html.dark {
+      --primary: #7c8bff;
+      --primary-hover: #95a1ff;
+      --primary-soft: #23264a;
+      --bg: #0b0c0f;
+      --card-bg: #17181c;
+      --text: #f2f3f5;
+      --text-muted: #9aa0ae;
+      --border: #272a31;
+      --shadow: none;
+      --donut-track: #2a2d35;
+      --wb-hero-1: #162a3d;
+      --wb-hero-2: #181b2c;
+      color-scheme: dark;
+    }
+
+    .wb-hero { background: linear-gradient(160deg, var(--wb-hero-1), var(--wb-hero-2)); border-radius: 26px; padding: 28px 22px 20px; margin-bottom: 16px; }
+    .wb-title { font-size: 1.9rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; background: linear-gradient(90deg, #35b6e6, #4a7dff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .wb-sub { font-size: 1.05rem; color: var(--text); margin-top: 6px; }
+    .wb-goal { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; font-size: 0.92rem; color: var(--text); }
+    .wb-detail { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+    .wb-pill { background: var(--primary); color: #fff; border: none; border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 0.8rem; cursor: pointer; font-family: inherit; }
+
+    .wb-card { background: var(--card-bg); border-radius: 26px; padding: 22px; margin-bottom: 18px; box-shadow: var(--shadow); }
+    .wb-total-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .wb-label { font-size: 0.95rem; font-weight: 600; color: var(--text-muted); }
+    .wb-big { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.02em; margin: 4px 0 2px; line-height: 1.1; }
+    .wb-hint { font-size: 0.82rem; color: var(--text-muted); }
+    .wb-donut { width: 128px; height: 128px; flex: 0 0 auto; }
+    .wb-donut svg { width: 100%; height: 100%; }
+    .wb-legend { list-style: none; margin: 18px 0 14px; display: flex; flex-direction: column; gap: 10px; }
+    .wb-legend li { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+    .wb-legend .dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+    .wb-legend .nm { flex: 1; }
+    .wb-legend .pc { color: var(--text-muted); font-size: 0.82rem; }
+    .wb-legend .vl { font-weight: 800; min-width: 62px; text-align: right; }
+    .wb-progress { margin-top: 6px; }
+
+    .wb-section { font-size: 0.98rem; font-weight: 700; color: var(--text-muted); margin: 6px 4px 10px; }
+    .wb-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .wb-tile { background: var(--card-bg); border-radius: 22px; padding: 16px; box-shadow: var(--shadow); }
+    .wb-ico { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; margin-bottom: 14px; }
+    .wb-tile-name { font-size: 0.95rem; color: var(--text); font-weight: 600; }
+    .wb-tile-val { font-size: 1.45rem; font-weight: 800; margin-top: 8px; line-height: 1.15; }
+    .wb-tile-val small { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+    .wb-tile-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* --- tema oscuro: reemplazo de colores fijos --- */
+    html.dark body { background: var(--bg); color: var(--text); }
+    html.dark header { background: #101114; box-shadow: 0 1px 0 var(--border); }
+    html.dark .date-navigator { background: #1d1f26; }
+    html.dark .date-navigator input[type="date"] { color: var(--text); color-scheme: dark; }
+    html.dark .tab-btn { background: #17181c; border-color: var(--border); color: var(--text-muted); }
+    html.dark .tab-btn:hover { background: var(--primary-soft); color: var(--primary); }
+    html.dark .tab-btn.active { background: var(--primary); color: #0b0c0f; border-color: var(--primary); }
+    @media (max-width: 767px) {
+      html.dark .tabs-wrapper { background: #101114; border-top-color: var(--border); box-shadow: none; }
+      html.dark .tab-btn { background: transparent; border: none; }
+      html.dark .tab-btn.active { background: var(--primary-soft); color: var(--primary); }
+    }
+    html.dark .metric-card, html.dark .card, html.dark .progress-section, html.dark .chart-container, html.dark .macro-card { background: var(--card-bg); }
+    html.dark .metric-card.consumed, html.dark .metric-card.burned, html.dark .metric-card.balance,
+    html.dark .metric-card.sleep, html.dark .metric-card.fasting { background: var(--card-bg); }
+    html.dark .macro-card.protein, html.dark .macro-card.carbs, html.dark .macro-card.fat { background: var(--card-bg); }
+    html.dark .mifflin-banner { background: var(--primary-soft); }
+    html.dark .form-control { background: #101114; color: var(--text); border-color: var(--border); }
+    html.dark .form-control::placeholder { color: #666c7a; }
+    html.dark .btn-outline { background: #1d1f26; color: var(--text); border-color: var(--border); }
+    html.dark .btn-outline:hover { background: var(--primary-soft); }
+    html.dark .record-item { background: #1d1f26; border-color: var(--border); }
+    html.dark .record-item:hover { background: #23262e; border-color: #353946; }
+    html.dark .empty-state { background: #1d1f26; color: var(--text-muted); }
+    html.dark .food-helper-box { background: #1d1f26; border-color: #353946; }
+    html.dark .ai-box { background: #14231c; border-color: #1f4a35; }
+    html.dark .ai-box-title { color: #6ee7a8; }
+    html.dark .summary-table th { background: #1d1f26; color: var(--text-muted); }
+    html.dark .summary-table th, html.dark .summary-table td { border-bottom-color: var(--border); }
+    html.dark .period-selector { background: #1d1f26; }
+    html.dark .period-btn.active { background: #2a2d36; color: var(--text); }
+    html.dark .progress-bar-bg { background: #2a2d35; }
+    html.dark .fast-times div { background: #1d1f26; border-color: var(--border); }
+    html.dark .fast-ring svg circle:first-child { stroke: #2a2d35; }
+    html.dark .chart-container { border: none; }
+    html.dark [style*="background:#f8fafc"], html.dark [style*="background: #f8fafc"] { background: #1d1f26 !important; }
+    html.dark [style*="background:white"], html.dark [style*="background: white"] { background: #1d1f26 !important; color: var(--text) !important; }
+    html.dark .tab-content h2, html.dark .tab-content h3 { color: var(--text); }
+    html.dark .btn-danger-outline { border-color: #5a2a2a; }
+    html.dark .btn-danger-outline:hover { background: #3a1d1d; }
+    html.dark svg text { fill: #9aa0ae; }
+    html.dark .badge-fast { background: #1e2c10; color: #b6e36a; }
+    html.dark .badge-fast-active { background: #33290c; color: #f5d56a; }
+
+    @media (max-width: 767px) {
+      .wb-title { font-size: 1.6rem; }
+      .wb-big { font-size: 2.3rem; }
+      .wb-donut { width: 112px; height: 112px; }
+      .wb-tiles { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -328,76 +430,75 @@
   <main>
     <!-- TAB 1: DASHBOARD -->
     <div id="tab-dashboard" class="tab-content active">
-      <div class="mifflin-banner">
-        <div>
-          <h4><span>🎯</span> Meta Calórica según Mifflin-St Jeor: <span id="bannerGoal">2000 kcal/día</span></h4>
-          <p id="bannerDetails">TMB: -- kcal | Gasto Total (TDEE): -- kcal | Objetivo: Mantenimiento</p>
+      <div class="wb-hero">
+        <div class="wb-title">Cuida de tu salud</div>
+        <p class="wb-sub">Mejora tus hábitos paso a paso.</p>
+        <div class="wb-goal">
+          <span>🎯 Meta: <strong id="bannerGoal">2000 kcal/día</strong></span>
+          <button class="wb-pill" onclick="goToTab('tab-mifflin')">Ajustar</button>
         </div>
-        <button class="btn btn-outline" onclick="goToTab('tab-mifflin')" style="background:white; font-size:0.8rem; padding:6px 12px;">Ajustar Parámetros</button>
+        <p class="wb-detail" id="bannerDetails">TMB: -- kcal | Gasto Total (TDEE): -- kcal</p>
       </div>
 
-      <div class="metrics-grid">
-        <div class="metric-card consumed">
-          <div class="metric-label">Calorías Ingeridas</div>
-          <div class="metric-value" id="dashConsumed">0</div>
-          <div class="metric-sub">Meta diaria: <span id="dashGoalCal">2000</span> kcal</div>
-        </div>
-        <div class="metric-card burned">
-          <div class="metric-label">Calorías Quemadas</div>
-          <div class="metric-value" id="dashBurned">0</div>
-          <div class="metric-sub"><span id="dashExerciseTime">0</span> min de ejercicio</div>
-        </div>
-        <div class="metric-card balance">
-          <div class="metric-label">Balance Neto</div>
-          <div class="metric-value" id="dashNet">0</div>
-          <div class="metric-sub">Ingeridas − Quemadas</div>
-        </div>
-        <div class="metric-card sleep">
-          <div class="metric-label">Sueño Anoche</div>
-          <div class="metric-value" id="dashSleep">0<span style="font-size: 1rem; font-weight: 500;"> hrs</span></div>
-          <div class="metric-sub" id="dashSleepQuality">Calidad: No registrada</div>
-        </div>
-        <div class="metric-card fasting" style="cursor:pointer;" onclick="goToTab('tab-fasting')">
-          <div class="metric-label">Ayuno</div>
-          <div class="metric-value" id="dashFast">--</div>
-          <div class="metric-sub" id="dashFastSub">Sin ayuno activo</div>
-        </div>
-      </div>
-
-      <div class="macros-grid">
-        <div class="macro-card protein">
-          <div class="metric-label">Proteínas</div>
-          <div class="macro-value"><span id="dashProtein">0</span> <small>g</small></div>
-          <div class="metric-sub"><span id="dashProteinPct">0</span>% de las kcal</div>
-        </div>
-        <div class="macro-card carbs">
-          <div class="metric-label">Carbohidratos</div>
-          <div class="macro-value"><span id="dashCarbs">0</span> <small>g</small></div>
-          <div class="metric-sub"><span id="dashCarbsPct">0</span>% de las kcal</div>
-        </div>
-        <div class="macro-card fat">
-          <div class="metric-label">Grasas</div>
-          <div class="macro-value"><span id="dashFat">0</span> <small>g</small></div>
-          <div class="metric-sub"><span id="dashFatPct">0</span>% de las kcal</div>
-        </div>
-        <div class="macro-card" style="border-top-color:#2563eb;">
-          <div class="metric-label">Total del día</div>
-          <div class="macro-value"><span id="dashTotalCal">0</span> <small>kcal</small></div>
-          <div class="macro-bar" title="Reparto de calorías: proteínas / carbohidratos / grasas">
-            <span id="barProtein" style="background:#ef4444; width:0%;"></span>
-            <span id="barCarbs" style="background:#f59e0b; width:0%;"></span>
-            <span id="barFat" style="background:#3b82f6; width:0%;"></span>
+      <div class="wb-card">
+        <div class="wb-total-row">
+          <div class="wb-total-text">
+            <div class="wb-label">Calorías ingeridas hoy</div>
+            <div class="wb-big" id="dashConsumed">0</div>
+            <div class="wb-hint">Meta diaria: <span id="dashGoalCal">2000</span> kcal</div>
+          </div>
+          <div class="wb-donut">
+            <svg viewBox="0 0 120 120" id="macroDonut"></svg>
           </div>
         </div>
+
+        <ul class="wb-legend">
+          <li><span class="dot" style="background:#ef6b6b;"></span><span class="nm">Proteínas</span><span class="pc"><span id="dashProteinPct">0</span>%</span><span class="vl"><span id="dashProtein">0</span> g</span></li>
+          <li><span class="dot" style="background:#f5b041;"></span><span class="nm">Carbohidratos</span><span class="pc"><span id="dashCarbsPct">0</span>%</span><span class="vl"><span id="dashCarbs">0</span> g</span></li>
+          <li><span class="dot" style="background:#5b9bff;"></span><span class="nm">Grasas</span><span class="pc"><span id="dashFatPct">0</span>%</span><span class="vl"><span id="dashFat">0</span> g</span></li>
+        </ul>
+
+        <div class="wb-progress">
+          <div class="progress-header">
+            <span>Consumo vs. meta</span>
+            <span id="progressText">0 / 2000 kcal (0%)</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="calProgressBar" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div style="display:none;">
+          <span id="dashTotalCal">0</span>
+          <span id="barProtein"></span><span id="barCarbs"></span><span id="barFat"></span>
+        </div>
       </div>
 
-      <div class="progress-section">
-        <div class="progress-header">
-          <span>Consumo Diario vs. Meta Mifflin-St Jeor</span>
-          <span id="progressText">0 / 2000 kcal (0%)</span>
+      <div class="wb-section">Resumen del día</div>
+      <div class="wb-tiles">
+        <div class="wb-tile">
+          <div class="wb-ico" style="background:#22a06b;">🔥</div>
+          <div class="wb-tile-name">Quemadas</div>
+          <div class="wb-tile-val"><span id="dashBurned">0</span> <small>kcal</small></div>
+          <div class="wb-tile-sub"><span id="dashExerciseTime">0</span> min de ejercicio</div>
         </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="calProgressBar" style="width: 0%;"></div>
+        <div class="wb-tile">
+          <div class="wb-ico" style="background:#e8963a;">⚖️</div>
+          <div class="wb-tile-name">Balance neto</div>
+          <div class="wb-tile-val"><span id="dashNet">0</span> <small>kcal</small></div>
+          <div class="wb-tile-sub">Ingeridas − Quemadas</div>
+        </div>
+        <div class="wb-tile">
+          <div class="wb-ico" style="background:#8b5cf6;">🌙</div>
+          <div class="wb-tile-name">Sueño</div>
+          <div class="wb-tile-val" id="dashSleep">0<small> hrs</small></div>
+          <div class="wb-tile-sub" id="dashSleepQuality">Calidad: No registrada</div>
+        </div>
+        <div class="wb-tile" style="cursor:pointer;" onclick="goToTab('tab-fasting')">
+          <div class="wb-ico" style="background:#65a30d;">⏳</div>
+          <div class="wb-tile-name">Ayuno</div>
+          <div class="wb-tile-val" id="dashFast">--</div>
+          <div class="wb-tile-sub" id="dashFastSub">Sin ayuno activo</div>
         </div>
       </div>
 
@@ -952,6 +1053,17 @@
         <button id="saveApiKeyBtn" class="btn btn-secondary" style="font-size:0.85rem; margin-bottom:20px;">
           💾 Guardar Clave de IA
         </button>
+
+        <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
+          <h3 style="font-size:0.95rem; font-weight:700; margin-bottom:6px;">Apariencia</h3>
+          <div class="form-group">
+            <label for="themeSelect">Tema</label>
+            <select id="themeSelect" class="form-control">
+              <option value="dark">🌙 Oscuro</option>
+              <option value="light">☀️ Claro</option>
+            </select>
+          </div>
+        </div>
 
         <div style="border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
           <h3 style="font-size:0.95rem; font-weight:700; margin-bottom:6px;">Metas Diarias Manuales</h3>
@@ -1601,6 +1713,22 @@
       document.getElementById('barCarbs').style.width = pctOf(kC) + '%';
       document.getElementById('barFat').style.width = pctOf(kF) + '%';
 
+      const donut = document.getElementById('macroDonut');
+      if (donut) {
+        const R = 46, C = 2 * Math.PI * R;
+        let acc = 0;
+        let rings = `<circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--donut-track)" stroke-width="16"></circle>`;
+        if (kSum > 0) {
+          [[kP, '#ef6b6b'], [kC, '#f5b041'], [kF, '#5b9bff']].forEach(([k, col]) => {
+            if (k <= 0) return;
+            const len = (k / kSum) * C;
+            rings += `<circle cx="60" cy="60" r="${R}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${Math.max(len - 2, 0)} ${C - Math.max(len - 2, 0)}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"></circle>`;
+            acc += len;
+          });
+        }
+        donut.innerHTML = rings;
+      }
+
       const weekBody = document.getElementById('dashWeekBody');
       if (weekBody) {
         weekBody.innerHTML = getPeriodDates(7).reverse().map(dStr => {
@@ -1948,7 +2076,25 @@
       `).join('');
     }
 
+    function applyTheme(mode) {
+      const dark = mode !== 'light';
+      document.documentElement.classList.toggle('dark', dark);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', dark ? '#0b0c0f' : '#ffffff');
+    }
+
     function setupSettings() {
+      const themeSel = document.getElementById('themeSelect');
+      let savedTheme = 'dark';
+      try { savedTheme = localStorage.getItem('saludenordenpro_theme') || 'dark'; } catch (e) {}
+      themeSel.value = savedTheme;
+      applyTheme(savedTheme);
+      themeSel.addEventListener('change', () => {
+        try { localStorage.setItem('saludenordenpro_theme', themeSel.value); } catch (e) {}
+        applyTheme(themeSel.value);
+        renderAll();
+      });
+
       const keyInput = document.getElementById('geminiApiKeyInput');
       keyInput.value = localStorage.getItem(API_KEY_STORAGE) || '';
 
