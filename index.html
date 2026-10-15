@@ -2133,6 +2133,7 @@
               appData = parsed.data;
               if (!Array.isArray(appData.fasts)) appData.fasts = [];
               if (parsed.settings) appSettings = parsed.settings;
+              if (parsed.mifflin) mifflinData = parsed.mifflin;
               if (parsed.customFoods) userCustomFoods = parsed.customFoods;
               saveStorage(); alert('Datos importados con éxito.'); renderAll();
             }
